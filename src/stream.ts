@@ -1,8 +1,8 @@
 import {
   SUI_CLOCK_OBJECT_ID,
   TransactionBlock,
-  // Connection,
-  // JsonRpcProvider
+  Connection,
+  JsonRpcProvider,
 } from '@mysten/sui.js'
 import { Network, Config, getConfig } from './config'
 
@@ -19,19 +19,19 @@ export type FeeInfo = {
 
 export type PauseInfo = {
   paused: boolean
-  pausedTime: number
+  pausedAt: number
   accPausedTime: number
 }
 
 export type StreamInfo = {
   id: string
-  coinType: string
+  coinType: string | null
   name: string
   remark: string
   sender: string
   recipient: string
   interval: number
-  ratePerSecond: number
+  ratePerInterval: number
   lastWithdrawTime: number
   startTime: number
   stopTime: number
@@ -44,6 +44,15 @@ export type StreamInfo = {
   balance: number
 }
 
+export enum StreamDirection {
+  OUT,
+  IN
+}
+
+type DynamicFields = {
+  type: string
+  fields: Record<string, any>
+}
 
 export class Stream {
 
@@ -51,13 +60,13 @@ export class Stream {
 
   private _config: Config
 
-  // private _rpcProvider: JsonRpcProvider
+  private _rpcProvider: JsonRpcProvider
 
   constructor(network: Network) {
     this._network = network
     this._config = getConfig(network)
-    // const conn = new Connection({ fullnode: this._config.fullNodeUrl })
-    // this._rpcProvider = new JsonRpcProvider(conn)
+    const conn = new Connection({ fullnode: this._config.fullNodeUrl })
+    this._rpcProvider = new JsonRpcProvider(conn)
   }
 
   get network(): Network {
@@ -68,35 +77,35 @@ export class Stream {
     return Network[this._network]
   }
 
-  createPayload(
-    coin_type: string,
+  createTransaction(
+    coinType: string,
     name: string,
     remark: string,
     recipient: string,
-    deposit_amount: number,
-    start_time: number,
-    stop_time: number,
+    depositAmount: number,
+    startTime: number,
+    stopTime: number,
     interval = 1000,
     closeable = true,
     modifiable = true
   ): TransactionBlock {
     // TODO add validation of input parameters,
-    // such as validity of coin_type length of name and remark, validity of recipient 
+    // such as validity of coin_type length of name and remark, validity of recipient
     const txb = new TransactionBlock()
     // TODO txb.gas should be replaced with the coin determined by coin_type
-    const coins = txb.splitCoins(txb.gas, [txb.pure(deposit_amount)])
+    const coins = txb.splitCoins(txb.gas, [txb.pure(depositAmount)])
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::create`,
-      typeArguments: [coin_type],
+      typeArguments: [coinType],
       arguments: [
         txb.object(this._config.globalConfigObjectId),
         coins[0],
         txb.pure(name),
         txb.pure(remark),
         txb.pure(recipient),
-        txb.pure(deposit_amount),
-        txb.pure(start_time),
-        txb.pure(stop_time),
+        txb.pure(depositAmount),
+        txb.pure(startTime),
+        txb.pure(stopTime),
         txb.pure(interval),
         txb.pure(closeable),
         txb.pure(modifiable),
@@ -106,5 +115,69 @@ export class Stream {
     return txb
   }
 
-  // TODO implement more functions
+  async getStreams(address: string, direction: StreamDirection): Promise<StreamInfo[]> {
+    const parentId = direction == StreamDirection.IN ? this._config.incomingStreamObjectId : this._config.outgoingStreamObjectId
+    const streamIds = await this._rpcProvider.getDynamicFieldObject({
+      parentId,
+      name: { type: 'address', value: address },
+    })
+    const streamIdsContent = streamIds.data?.content as DynamicFields
+    const streamRecords = await this._rpcProvider.multiGetObjects({
+      ids: streamIdsContent.fields.value,
+      options: { showContent: true, showOwner: true },
+    })
+    const streams: StreamInfo[] = []
+    for (let i = 0; i < streamRecords.length; i++) {
+      const streamRecord = streamRecords[i].data?.content as DynamicFields
+      if (
+        direction == StreamDirection.IN && streamRecord.fields.recipient == address ||
+        direction == StreamDirection.OUT && streamRecord.fields.sender == address
+      ) {
+        streams.push(this.convert(streamRecord))
+      }
+    }
+    return streams
+  }
+
+  private convert(streamRecord: DynamicFields): StreamInfo {
+    const streamInfo: StreamInfo = {
+      id: streamRecord.fields.id.id,
+      coinType: this.extractCoinType(streamRecord.type),
+      name: streamRecord.fields.name,
+      remark: streamRecord.fields.remark,
+      sender: streamRecord.fields.sender,
+      recipient: streamRecord.fields.recipient,
+      interval: parseInt(streamRecord.fields.interval),
+      ratePerInterval: parseInt(streamRecord.fields.rate_per_interval),
+      lastWithdrawTime: parseInt(streamRecord.fields.last_withdraw_time),
+      startTime: parseInt(streamRecord.fields.start_time),
+      stopTime: parseInt(streamRecord.fields.stop_time),
+      depositAmount: parseInt(streamRecord.fields.deposit_amount),
+      remainingAmount: parseInt(streamRecord.fields.remaining_amount),
+      closed: streamRecord.fields.closed,
+      featureInfo: {
+        pauseable: streamRecord.fields.feature_info.fields.pauseable,
+        senderCloseable: streamRecord.fields.feature_info.fields.sender_closeable,
+        recipientModifiable: streamRecord.fields.feature_info.fields.recipient_modifiable,
+      },
+      feeInfo: {
+        feeRecipient: streamRecord.fields.fee_info.fields.fee_recipient,
+        feePoint: streamRecord.fields.fee_info.fields.fee_point,
+      },
+      pauseInfo: {
+        paused: streamRecord.fields.pauseInfo.fields.paused,
+        pausedAt: parseInt(streamRecord.fields.pauseInfo.fields.pause_at),
+        accPausedTime: parseInt(streamRecord.fields.pauseInfo.fields.acc_paused_time),
+      },
+      balance: parseInt(streamRecord.fields.balance),
+    }
+    return streamInfo
+
+  }
+
+  private extractCoinType(type: string): string {
+    const match = type.match(/.+<(.+)>/)
+    if (!match) throw new Error('missing coin type')
+    return match[0]
+  }
 }
