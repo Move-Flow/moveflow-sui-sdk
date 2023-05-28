@@ -24,10 +24,8 @@ describe('Stream', () => {
     const recipient = '0x79ae5e363c3f87bac4661795e28753e13a5913f9f94bb2027e69d08782b1b4a4'
     const depositAmount = 10000000
     const startTime = Date.now() - 1000 * 60
-    console.log(startTime)
     const duration = 24 * 60 * 60 * 1000 // 1 day
     const stopTime = startTime + duration
-    console.log(stopTime)
     const txb = stream.createTransaction(
       coinType,
       name,
