@@ -36,21 +36,20 @@ describe('Stream', () => {
       stopTime
     )
     txb.setGasBudget(300000000)
-    const result = await signer.signAndExecuteTransactionBlock({
+    const response = await signer.signAndExecuteTransactionBlock({
       transactionBlock: txb,
       options: {
-        showEvents: true,
-        showEffects: true,
-        showBalanceChanges: true,
         showObjectChanges: true,
       },
     })
-    console.log(result)
+    const streamCreationResult = stream.getStreamCreationResult(response)
+    console.log(streamCreationResult)
   })
 
   test('getStreams works', async () => {
     const address = '0x7905ae3ed4a5a77284684fa86fd83c38a9f138b0cc390721c46bca3aaafaf26c'
     const streams = await stream.getStreams(address, StreamDirection.OUT)
     console.log(streams)
+    expect(streams.length).toBeGreaterThan(0)
   })
 })

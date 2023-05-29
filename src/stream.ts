@@ -3,6 +3,7 @@ import {
   TransactionBlock,
   Connection,
   JsonRpcProvider,
+  SuiTransactionBlockResponse
 } from '@mysten/sui.js'
 import { Network, Config, getConfig } from './config'
 
@@ -25,7 +26,7 @@ export type PauseInfo = {
 
 export type StreamInfo = {
   id: string
-  coinType: string | null
+  coinType: string
   name: string
   remark: string
   sender: string
@@ -47,6 +48,12 @@ export type StreamInfo = {
 export enum StreamDirection {
   OUT,
   IN
+}
+
+export type StreamCreationResult = {
+  streamId: string
+  senderCap: string
+  recipientCap: string
 }
 
 type DynamicFields = {
@@ -115,6 +122,27 @@ export class Stream {
     return txb
   }
 
+  getStreamCreationResult(response: SuiTransactionBlockResponse): StreamCreationResult {
+    if (!response.objectChanges) throw new Error('the response is missing object changes')
+    let streamId = '', senderCap = '', recipientCap = ''
+    for (let objectChange of response.objectChanges) {
+      if ('objectType' in objectChange) {
+        if (objectChange.objectType.includes('StreamInfo'))
+          streamId = objectChange.objectId
+        else if (objectChange.objectType.includes('SenderCap'))
+          senderCap = objectChange.objectId
+        else if (objectChange.objectType.includes('RecipientCap'))
+          recipientCap = objectChange.objectId
+      }
+    }
+    let streamCreationResult: StreamCreationResult = {
+      streamId,
+      senderCap,
+      recipientCap
+    }
+    return streamCreationResult
+  }
+
   async getStreams(address: string, direction: StreamDirection): Promise<StreamInfo[]> {
     const parentId = direction == StreamDirection.IN ? this._config.incomingStreamObjectId : this._config.outgoingStreamObjectId
     const streamIds = await this._rpcProvider.getDynamicFieldObject({
@@ -178,6 +206,6 @@ export class Stream {
   private extractCoinType(type: string): string {
     const match = type.match(/.+<(.+)>/)
     if (!match) throw new Error('missing coin type')
-    return match[0]
+    return match[1]
   }
 }
