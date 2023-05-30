@@ -3,7 +3,9 @@ import {
   TransactionBlock,
   Connection,
   JsonRpcProvider,
-  SuiTransactionBlockResponse
+  SuiTransactionBlockResponse,
+  ObjectId,
+  SuiAddress
 } from '@mysten/sui.js'
 import { Network, Config, getConfig } from './config'
 
@@ -14,7 +16,7 @@ export type FeatureInfo = {
 }
 
 export type FeeInfo = {
-  feeRecipient: string
+  feeRecipient: SuiAddress
   feePoint: number
 }
 
@@ -25,12 +27,12 @@ export type PauseInfo = {
 }
 
 export type StreamInfo = {
-  id: string
+  id: ObjectId
   coinType: string
   name: string
   remark: string
-  sender: string
-  recipient: string
+  sender: SuiAddress
+  recipient: SuiAddress
   interval: number
   ratePerInterval: number
   lastWithdrawTime: number
@@ -88,7 +90,7 @@ export class Stream {
     coinType: string,
     name: string,
     remark: string,
-    recipient: string,
+    recipient: SuiAddress,
     depositAmount: number,
     startTime: number,
     stopTime: number,
@@ -122,6 +124,28 @@ export class Stream {
     return txb
   }
 
+  async extendTransaction(
+    coinType: string,
+    senderCap: ObjectId,
+    streamId: ObjectId,
+    newStopTime: number
+  ): Promise<TransactionBlock> {
+    const txb = new TransactionBlock()
+    // TODO need to figure out how to get the right coin
+    const coins = txb.splitCoins(txb.gas, [txb.pure(100000)])
+    txb.moveCall({
+      target: `${this._config.packageObjectId}::stream::extend`,
+      typeArguments: [coinType],
+      arguments: [
+        txb.object(senderCap),
+        txb.object(streamId),
+        coins[0],
+        txb.pure(newStopTime),
+      ]
+    })
+    return txb
+  }
+
   getStreamCreationResult(response: SuiTransactionBlockResponse): StreamCreationResult {
     if (!response.objectChanges) throw new Error('the response is missing object changes')
     let streamId = '', senderCap = '', recipientCap = ''
@@ -143,7 +167,7 @@ export class Stream {
     return streamCreationResult
   }
 
-  async getStreams(address: string, direction: StreamDirection): Promise<StreamInfo[]> {
+  async getStreams(address: SuiAddress, direction: StreamDirection): Promise<StreamInfo[]> {
     const parentId = direction == StreamDirection.IN ? this._config.incomingStreamObjectId : this._config.outgoingStreamObjectId
     const streamIds = await this._rpcProvider.getDynamicFieldObject({
       parentId,

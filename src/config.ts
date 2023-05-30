@@ -1,3 +1,5 @@
+import { ObjectId } from '@mysten/sui.js'
+
 export enum Network {
   devnet,
   testnet,
@@ -7,12 +9,12 @@ export enum Network {
 export type Config = {
   network: Network
   fullNodeUrl: string
-  packageObjectId: string
-  globalConfigObjectId: string
-  coinConfigsObjectId: string
-  incomingStreamObjectId: string
-  outgoingStreamObjectId: string
-  manageCap: string
+  packageObjectId: ObjectId
+  globalConfigObjectId: ObjectId
+  coinConfigsObjectId: ObjectId
+  incomingStreamObjectId: ObjectId
+  outgoingStreamObjectId: ObjectId
+  manageCap: ObjectId
 }
 
 export const TESTNET_CONFIG: Config = {

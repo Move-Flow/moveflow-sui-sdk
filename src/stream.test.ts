@@ -5,7 +5,7 @@ import {
   Connection,
 } from '@mysten/sui.js'
 import { Network, getConfig } from './config'
-import { Stream, StreamDirection } from './stream'
+import { Stream, StreamDirection, StreamCreationResult } from './stream'
 
 describe('Stream', () => {
   // address 0x7905ae3ed4a5a77284684fa86fd83c38a9f138b0cc390721c46bca3aaafaf26c
@@ -16,6 +16,11 @@ describe('Stream', () => {
   const rpcProvider = new JsonRpcProvider(conn)
   const signer = new RawSigner(keypair, rpcProvider)
   const stream = new Stream(Network.testnet)
+  let streamCreationResult: StreamCreationResult = {
+    streamId: '',
+    senderCap: '',
+    recipientCap: ''
+  }
 
   test('createTransaction works', async () => {
     const coinType = '0x2::sui::SUI'
@@ -42,8 +47,28 @@ describe('Stream', () => {
         showObjectChanges: true,
       },
     })
-    const streamCreationResult = stream.getStreamCreationResult(response)
+    streamCreationResult = stream.getStreamCreationResult(response)
     console.log(streamCreationResult)
+  })
+
+  test('extendTransaction works', async () => {
+    const coinType = '0x2::sui::SUI'
+    const duration = 24 * 60 * 60 * 1000 // 1 day
+    const stopTime = Date.now() + duration * 2
+    const txb = await stream.extendTransaction(
+      coinType,
+      streamCreationResult.senderCap,
+      streamCreationResult.streamId,
+      stopTime
+    )
+    txb.setGasBudget(300000000)
+    const response = await signer.signAndExecuteTransactionBlock({
+      transactionBlock: txb,
+      options: {
+        showObjectChanges: true,
+      },
+    })
+    console.log(response)
   })
 
   test('getStreams works', async () => {
