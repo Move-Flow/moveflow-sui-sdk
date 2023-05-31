@@ -5,7 +5,7 @@ import {
   JsonRpcProvider,
   SuiTransactionBlockResponse,
   ObjectId,
-  SuiAddress
+  SuiAddress,
 } from '@mysten/sui.js'
 import { Network, Config, getConfig } from './config'
 
@@ -141,7 +141,95 @@ export class Stream {
         txb.object(streamId),
         coins[0],
         txb.pure(newStopTime),
-      ]
+      ],
+    })
+    return txb
+  }
+
+  pauseTransaction(
+    coinType: string,
+    senderCap: ObjectId,
+    streamId: ObjectId
+  ): TransactionBlock {
+    const txb = new TransactionBlock()
+    txb.moveCall({
+      target: `${this._config.packageObjectId}::stream::pause`,
+      typeArguments: [coinType],
+      arguments: [
+        txb.object(senderCap),
+        txb.object(streamId),
+        txb.object(SUI_CLOCK_OBJECT_ID),
+      ],
+    })
+    return txb
+  }
+
+  resumeTransaction(
+    coinType: string,
+    senderCap: ObjectId,
+    streamId: ObjectId
+  ): TransactionBlock {
+    const txb = new TransactionBlock()
+    txb.moveCall({
+      target: `${this._config.packageObjectId}::stream::resume`,
+      typeArguments: [coinType],
+      arguments: [
+        txb.object(senderCap),
+        txb.object(streamId),
+        txb.object(SUI_CLOCK_OBJECT_ID),
+      ],
+    })
+    return txb
+  }
+
+  withdrawTransaction(
+    coinType: string,
+    streamId: ObjectId
+  ): TransactionBlock {
+    const txb = new TransactionBlock()
+    txb.moveCall({
+      target: `${this._config.packageObjectId}::stream::withdraw`,
+      typeArguments: [coinType],
+      arguments: [
+        txb.object(streamId),
+        txb.object(SUI_CLOCK_OBJECT_ID),
+      ],
+    })
+    return txb
+  }
+
+  setNewRecipientTransaction(
+    coinType: string,
+    streamId: ObjectId,
+    newRecipient: SuiAddress
+  ): TransactionBlock {
+    const txb = new TransactionBlock()
+    txb.moveCall({
+      target: `${this._config.packageObjectId}::stream::set_new_recipient`,
+      typeArguments: [coinType],
+      arguments: [
+        txb.object(streamId),
+        txb.object(this._config.coinConfigsObjectId),
+        txb.pure(newRecipient),
+      ],
+    })
+    return txb
+  }
+
+  closeTransaction(
+    coinType: string,
+    senderCap: ObjectId,
+    streamId: ObjectId
+  ): TransactionBlock {
+    const txb = new TransactionBlock()
+    txb.moveCall({
+      target: `${this._config.packageObjectId}::stream::close`,
+      typeArguments: [coinType],
+      arguments: [
+        txb.object(senderCap),
+        txb.object(streamId),
+        txb.object(SUI_CLOCK_OBJECT_ID),
+      ],
     })
     return txb
   }
@@ -149,7 +237,7 @@ export class Stream {
   getStreamCreationResult(response: SuiTransactionBlockResponse): StreamCreationResult {
     if (!response.objectChanges) throw new Error('the response is missing object changes')
     let streamId = '', senderCap = '', recipientCap = ''
-    for (let objectChange of response.objectChanges) {
+    for (const objectChange of response.objectChanges) {
       if ('objectType' in objectChange) {
         if (objectChange.objectType.includes('StreamInfo'))
           streamId = objectChange.objectId
@@ -159,10 +247,10 @@ export class Stream {
           recipientCap = objectChange.objectId
       }
     }
-    let streamCreationResult: StreamCreationResult = {
+    const streamCreationResult: StreamCreationResult = {
       streamId,
       senderCap,
-      recipientCap
+      recipientCap,
     }
     return streamCreationResult
   }
@@ -231,5 +319,55 @@ export class Stream {
     const match = type.match(/.+<(.+)>/)
     if (!match) throw new Error('missing coin type')
     return match[1]
+  }
+
+  // admin functions
+  registerCoinTransaction(
+    coinType: string,
+    feePoint: number
+  ): TransactionBlock {
+    const txb = new TransactionBlock()
+    txb.moveCall({
+      target: `${this._config.packageObjectId}::stream::register_coin`,
+      typeArguments: [coinType],
+      arguments: [
+        txb.object(this._config.manageCap),
+        txb.object(this._config.globalConfigObjectId),
+        txb.pure(feePoint),
+      ],
+    })
+    return txb
+  }
+
+  setFeePointTransaction(
+    coinType: string,
+    newFeePoint: number
+  ): TransactionBlock {
+    const txb = new TransactionBlock()
+    txb.moveCall({
+      target: `${this._config.packageObjectId}::stream::set_fee_point`,
+      typeArguments: [coinType],
+      arguments: [
+        txb.object(this._config.manageCap),
+        txb.object(this._config.globalConfigObjectId),
+        txb.pure(newFeePoint),
+      ],
+    })
+    return txb
+  }
+
+  setFeeRecipientTransaction(
+    newFeeRecipient: SuiAddress
+  ): TransactionBlock {
+    const txb = new TransactionBlock()
+    txb.moveCall({
+      target: `${this._config.packageObjectId}::stream::set_fee_recipient`,
+      arguments: [
+        txb.object(this._config.manageCap),
+        txb.object(this._config.globalConfigObjectId),
+        txb.pure(newFeeRecipient),
+      ],
+    })
+    return txb
   }
 }

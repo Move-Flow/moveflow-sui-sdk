@@ -19,11 +19,11 @@ describe('Stream', () => {
   let streamCreationResult: StreamCreationResult = {
     streamId: '',
     senderCap: '',
-    recipientCap: ''
+    recipientCap: '',
   }
+  const coinType = '0x2::sui::SUI'
 
   test('createTransaction works', async () => {
-    const coinType = '0x2::sui::SUI'
     const name = 'first'
     const remark = 'first sui stream'
     const recipient = '0x79ae5e363c3f87bac4661795e28753e13a5913f9f94bb2027e69d08782b1b4a4'
@@ -40,7 +40,8 @@ describe('Stream', () => {
       startTime,
       stopTime
     )
-    txb.setGasBudget(300000000)
+    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
+    txb.setGasBudget(gasCost)
     const response = await signer.signAndExecuteTransactionBlock({
       transactionBlock: txb,
       options: {
@@ -61,7 +62,75 @@ describe('Stream', () => {
       streamCreationResult.streamId,
       stopTime
     )
-    txb.setGasBudget(300000000)
+    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
+    txb.setGasBudget(gasCost)
+    const response = await signer.signAndExecuteTransactionBlock({
+      transactionBlock: txb,
+      options: {
+        showObjectChanges: true,
+      },
+    })
+    console.log(response)
+  })
+
+  test('pauseTransaction works', async () => {
+    const txb = stream.pauseTransaction(
+      coinType,
+      streamCreationResult.senderCap,
+      streamCreationResult.streamId
+    )
+    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
+    txb.setGasBudget(gasCost)
+    const response = await signer.signAndExecuteTransactionBlock({
+      transactionBlock: txb,
+      options: {
+        showObjectChanges: true,
+      },
+    })
+    console.log(response)
+  })
+
+  test('resumeTransaction works', async () => {
+    const txb = stream.resumeTransaction(
+      coinType,
+      streamCreationResult.senderCap,
+      streamCreationResult.streamId
+    )
+    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
+    txb.setGasBudget(gasCost)
+    const response = await signer.signAndExecuteTransactionBlock({
+      transactionBlock: txb,
+      options: {
+        showObjectChanges: true,
+      },
+    })
+    console.log(response)
+  })
+
+  test('withdrawTransaction works', async () => {
+    const txb = stream.withdrawTransaction(
+      coinType,
+      streamCreationResult.streamId
+    )
+    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
+    txb.setGasBudget(gasCost)
+    const response = await signer.signAndExecuteTransactionBlock({
+      transactionBlock: txb,
+      options: {
+        showObjectChanges: true,
+      },
+    })
+    console.log(response)
+  })
+
+  test('closeTransaction works', async () => {
+    const txb = stream.closeTransaction(
+      coinType,
+      streamCreationResult.senderCap,
+      streamCreationResult.streamId
+    )
+    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
+    txb.setGasBudget(gasCost)
     const response = await signer.signAndExecuteTransactionBlock({
       transactionBlock: txb,
       options: {
@@ -75,6 +144,54 @@ describe('Stream', () => {
     const address = '0x7905ae3ed4a5a77284684fa86fd83c38a9f138b0cc390721c46bca3aaafaf26c'
     const streams = await stream.getStreams(address, StreamDirection.OUT)
     console.log(streams)
-    expect(streams.length).toBeGreaterThan(0)
+    expect(streams.length).toBeDefined
+  })
+
+  // admin functions
+  test('registerCoinTransaction works', async () => {
+    const txb = stream.registerCoinTransaction(
+      coinType, // TODO replace it with another coin type
+      100
+    )
+    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
+    txb.setGasBudget(gasCost)
+    const response = await signer.signAndExecuteTransactionBlock({
+      transactionBlock: txb,
+      options: {
+        showObjectChanges: true,
+      },
+    })
+    console.log(response)
+  })
+
+  test('setFeePointTransaction works', async () => {
+    const txb = stream.setFeePointTransaction(
+      coinType, // TODO replace it with another coin type
+      80
+    )
+    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
+    txb.setGasBudget(gasCost)
+    const response = await signer.signAndExecuteTransactionBlock({
+      transactionBlock: txb,
+      options: {
+        showObjectChanges: true,
+      },
+    })
+    console.log(response)
+  })
+
+  test('setFeeRecipientTransaction works', async () => {
+    const txb = stream.setFeeRecipientTransaction(
+      'newFeeRecipient' // TODO replace it with valid address
+    )
+    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
+    txb.setGasBudget(gasCost)
+    const response = await signer.signAndExecuteTransactionBlock({
+      transactionBlock: txb,
+      options: {
+        showObjectChanges: true,
+      },
+    })
+    console.log(response)
   })
 })

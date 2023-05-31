@@ -25,7 +25,7 @@ export const TESTNET_CONFIG: Config = {
   coinConfigsObjectId: '0x7fc9b9e34eb6bad2bab11334c84bc1fcd2623d680d92849fcc07c08a2a2f9feb',
   incomingStreamObjectId: '0x55fe3b02615c2dd3baf4f5f1f54337f20e65f1f16a36700078bb4fec43d7899e',
   outgoingStreamObjectId: '0x9302b20ecc6d84820b795172219aba934186a9364d353e6e445819f5c5618b34',
-  manageCap: '0xadc0149b9a66f58d75cedc8a5e3a3c11f17f7106c741093652153a31118bf8d2'
+  manageCap: '0xadc0149b9a66f58d75cedc8a5e3a3c11f17f7106c741093652153a31118bf8d2',
 }
 
 export function getConfig(network: Network): Config {
