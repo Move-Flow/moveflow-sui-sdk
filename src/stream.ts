@@ -94,7 +94,7 @@ export class Stream {
     depositAmount: number,
     startTime: number,
     stopTime: number,
-    interval = 1000,
+    interval = 1,
     closeable = true,
     modifiable = true
   ): TransactionBlock {
@@ -257,6 +257,7 @@ export class Stream {
 
   async getStreams(address: SuiAddress, direction: StreamDirection): Promise<StreamInfo[]> {
     const parentId = direction == StreamDirection.IN ? this._config.incomingStreamObjectId : this._config.outgoingStreamObjectId
+    
     const streamIds = await this._rpcProvider.getDynamicFieldObject({
       parentId,
       name: { type: 'address', value: address },
@@ -277,6 +278,57 @@ export class Stream {
       }
     }
     return streams
+  }
+
+  async getStreamById(id: string): Promise<StreamInfo> {
+    
+    const _record = await this._rpcProvider.getObject({
+      id,
+      options: { showContent: true, showOwner: true },
+    })
+
+    const streamInfo = this.convert(_record.data?.content as DynamicFields)
+    return streamInfo
+
+  }
+
+  withdrawable(stream: StreamInfo): bigint {
+      const lastWithdrawnTime = Number(stream.lastWithdrawTime);
+      // const startTime = Number(stream.startTime);
+      // const paused = stream.pauseInfo.paused;
+
+      const stopTime = Number(stream.stopTime);
+      const interval = Number(stream.interval);
+      const acc_pasued_time = stream.pauseInfo.accPausedTime;
+
+      const currTime = Date.parse(new Date() as any) / 1000;
+      if (currTime <= lastWithdrawnTime) {                                                      // 未开始
+        return BigInt(0);
+      } 
+      else if (lastWithdrawnTime <= currTime && currTime <= stopTime) {                         // 已开始，未结束
+          const timeSpan = currTime - lastWithdrawnTime - acc_pasued_time;                    
+          const intervalNum = Math.floor(timeSpan / interval);
+          const withdrawable = BigInt(intervalNum) * BigInt(stream.ratePerInterval) / BigInt(1000);
+          return withdrawable;
+      } 
+      else {  
+        const timeSpan = currTime - lastWithdrawnTime - acc_pasued_time;                    
+        const intervalNum = Math.floor(timeSpan / interval);
+        const withdrawable = BigInt(intervalNum) * BigInt(stream.ratePerInterval) / BigInt(1000);
+        return withdrawable;
+      }
+  }
+
+
+  async getSenderCap(owner: string) {
+    const senderObjects = await this._rpcProvider.getOwnedObjects({
+      owner: owner,
+      options: {showContent: true},
+      filter: {
+        StructType: `${this._config.packageObjectId}::stream::SenderCap`
+      }
+    })
+    return senderObjects
   }
 
   private convert(streamRecord: DynamicFields): StreamInfo {
@@ -312,7 +364,6 @@ export class Stream {
       balance: parseInt(streamRecord.fields.balance),
     }
     return streamInfo
-
   }
 
   private extractCoinType(type: string): string {
@@ -356,9 +407,7 @@ export class Stream {
     return txb
   }
 
-  setFeeRecipientTransaction(
-    newFeeRecipient: SuiAddress
-  ): TransactionBlock {
+  setFeeRecipientTransaction(newFeeRecipient: SuiAddress): TransactionBlock {
     const txb = new TransactionBlock()
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::set_fee_recipient`,

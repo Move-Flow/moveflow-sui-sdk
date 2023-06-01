@@ -4,7 +4,14 @@ import {
   FeatureInfo,
   FeeInfo,
   PauseInfo,
+  StreamCreationResult,
+  StreamDirection,
 } from './stream'
+
+export enum NetworkType {
+  Mainnet,
+  Testnet,
+}
 
 export {
   Stream,
@@ -12,4 +19,6 @@ export {
   FeatureInfo,
   FeeInfo,
   PauseInfo,
+  StreamCreationResult,
+  StreamDirection,
 }
