@@ -26,31 +26,31 @@ const stream = new Stream(Network.testnet)
 
 1.  create a stream
 
-    ```
-    const name = 'first'
-    const remark = 'first sui stream'
-    const recipient = '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
-    const depositAmount = 10000000
-    const startTime = Date.parse(new Date() as any)/1000  - 60
-    const duration = 24 * 60 * 60 // 1 day
-    const stopTime = startTime + duration
+```
+  const name = 'first'
+  const remark = 'first sui stream'
+  const recipient = '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
+  const depositAmount = 10000000
+  const startTime = Date.parse(new Date() as any)/1000  - 60
+  const duration = 24 * 60 * 60 // 1 day
+  const stopTime = startTime + duration
 
-    const tx = stream.createTransaction(
-      coinType,                                     // stream pyament coin typ， eq, 0x:sui:SIU 
-      name,                                         // stream name text
-      remark,                                       // remark text
-      recipient,                                    // recipient address
-      depositAmount,                                // deposit amount
-      startTime,                                    // stop time, unit: second 
-      stopTime,                                     // stop time, unit: second
-      // interval: 1,                               // stream interval: default 1s 
-    )
-    const response = await wallet.signAndExecuteTransactionBlock({
-      transactionBlock: tx as any,
-    });
-    streamCreationResult = stream.getStreamCreationResult(response)
- 
-    ```
+  const tx = stream.createTransaction(
+    coinType,                                     // stream pyament coin typ， eq, 0x:sui:SIU 
+    name,                                         // stream name text
+    remark,                                       // remark text
+    recipient,                                    // recipient address
+    depositAmount,                                // deposit amount
+    startTime,                                    // stop time, unit: second 
+    stopTime,                                     // stop time, unit: second
+    // interval: 1,                               // stream interval: default 1s 
+  )
+  const response = await wallet.signAndExecuteTransactionBlock({
+    transactionBlock: tx as any,
+  });
+  streamCreationResult = stream.getStreamCreationResult(response)
+
+```
 
 2. withdraw from a stream 
 
@@ -68,24 +68,23 @@ const response = await wallet.signAndExecuteTransactionBlock({
 3.  close a stream
 
 ```
-    const tx = stream.closeTransaction(
-      coinType,
-      streamCreationResult.senderCap,
-      streamCreationResult.streamId
-    )
-    const response = await wallet.signAndExecuteTransactionBlock({
-      transactionBlock: tx as any,
-    });
-
+  const tx = stream.closeTransaction(
+    coinType,
+    streamCreationResult.senderCap,
+    streamCreationResult.streamId
+  )
+  const response = await wallet.signAndExecuteTransactionBlock({
+    transactionBlock: tx as any,
+  });
 ```
 
 4. Pause a stream
 
 ```
- const tx = stream.pauseTransaction(
-    coinType,
-    streamCreationResult.senderCap,
-    streamCreationResult.streamId
+const tx = stream.pauseTransaction(
+  coinType,
+  streamCreationResult.senderCap,
+  streamCreationResult.streamId
 )
 
 const response = await wallet.signAndExecuteTransactionBlock({
