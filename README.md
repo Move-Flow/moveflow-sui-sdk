@@ -151,6 +151,23 @@ const list = caps.data.map(m=> {
 ```
 
 
+6. query sender caps 
+
+```
+const owner = '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
+const caps = await stream.getSenderCap(owner)
+const list = caps.data.map(m=> { 
+  return {
+    cap: (m.data?.content as any).fields.id.id, 
+    stream: (m.data?.content as any).fields.stream
+  }
+})
+
+console.log("list:", list)
+```
+
+
+
 
 
 ## ref: contract version 0.3.1
