@@ -209,7 +209,7 @@ export class Stream {
       typeArguments: [coinType],
       arguments: [
         txb.object(streamId),
-        txb.object(this._config.coinConfigsObjectId),
+        txb.object(this._config.globalConfigObjectId),
         txb.pure(newRecipient),
       ],
     })

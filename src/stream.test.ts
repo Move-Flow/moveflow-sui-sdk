@@ -8,13 +8,30 @@ import { Network, getConfig } from './config'
 import { Stream, StreamDirection, StreamCreationResult } from './stream'
 
 describe('Stream', () => {
-  // address 0x7905ae3ed4a5a77284684fa86fd83c38a9f138b0cc390721c46bca3aaafaf26c
-  const mnemonic = 'indoor educate spin hour trick faculty indoor grid aware cliff jungle raccoon'
-  const path = 'm/44\'/784\'/0\'/0\'/0\''
-  const keypair = Ed25519Keypair.deriveKeypair(mnemonic, path)
   const conn = new Connection({ fullnode: getConfig(Network.testnet).fullNodeUrl })
   const rpcProvider = new JsonRpcProvider(conn)
-  const signer = new RawSigner(keypair, rpcProvider)
+  const path = 'm/44\'/784\'/0\'/0\'/0\''
+
+  // admin address 0x914145bfea385c09095123891f3cbfc36ab98e0ab88fbb985c92319399ddf92e
+  const adminMnemonic = 'member gate bicycle bicycle give lobster engine film mango pave critic chat'
+  const adminKeypair = Ed25519Keypair.deriveKeypair(adminMnemonic, path)
+  const admin = new RawSigner(adminKeypair, rpcProvider)
+
+  // sender address 0x7905ae3ed4a5a77284684fa86fd83c38a9f138b0cc390721c46bca3aaafaf26c
+  const senderMnemonic = 'indoor educate spin hour trick faculty indoor grid aware cliff jungle raccoon'
+  const senderKeypair = Ed25519Keypair.deriveKeypair(senderMnemonic, path)
+  const sender = new RawSigner(senderKeypair, rpcProvider)
+
+  // recipient address 0x45f5a96940e84dd876b1adc2c434961178fc94cb79c23a9f8ddc57c996255869
+  const recipientMnemonic = 'evidence paddle silver glance tackle stage solution enlist input canoe say chest'
+  const recipientKeypair = Ed25519Keypair.deriveKeypair(recipientMnemonic, path)
+  const recipient = new RawSigner(recipientKeypair, rpcProvider)
+
+  // another recipient address 0x08bb80f552385ab82fa689ba24b157ec14860aff6dde76a5cbca00d8e59ad1a3
+  const anotherRecipientMnemonic = 'because artist ketchup acoustic merge illness math glide echo coin roast have'
+  const anotherRecipientKeypair = Ed25519Keypair.deriveKeypair(anotherRecipientMnemonic, path)
+  const anotherRecipient = new RawSigner(anotherRecipientKeypair, rpcProvider)
+
   const stream = new Stream(Network.testnet)
   let streamCreationResult: StreamCreationResult = {
     streamId: '',
@@ -26,24 +43,25 @@ describe('Stream', () => {
   test('createTransaction works', async () => {
     const name = 'first'
     const remark = 'first sui stream'
-    const recipient = '0x79ae5e363c3f87bac4661795e28753e13a5913f9f94bb2027e69d08782b1b4a4'
     const depositAmount = 10000000
     const startTime = Date.now() - 1000 * 60
     const duration = 24 * 60 * 60 * 1000 // 1 day
     const stopTime = startTime + duration
+    const recipientAddress = await recipient.getAddress()
     const txb = stream.createTransaction(
       coinType,
       name,
       remark,
-      recipient,
+      recipientAddress,
       depositAmount,
       startTime,
       stopTime
     )
-    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
-    txb.setGasBudget(gasCost)
-    const response = await signer.signAndExecuteTransactionBlock({
-      transactionBlock: txb,
+    const senderAddress = await sender.getAddress()
+    txb.setSender(senderAddress)
+    const txBytes = await txb.build({ provider: rpcProvider })
+    const response = await sender.signAndExecuteTransactionBlock({
+      transactionBlock: txBytes,
       options: {
         showObjectChanges: true,
       },
@@ -62,10 +80,12 @@ describe('Stream', () => {
       streamCreationResult.streamId,
       stopTime
     )
-    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
-    txb.setGasBudget(gasCost)
-    const response = await signer.signAndExecuteTransactionBlock({
-      transactionBlock: txb,
+    const senderAddress = await sender.getAddress()
+    txb.setSender(senderAddress)
+    txb.setGasBudget(30000000) // otherwise error - not able to determine a budget
+    const txBytes = await txb.build({ provider: rpcProvider })
+    const response = await sender.signAndExecuteTransactionBlock({
+      transactionBlock: txBytes,
       options: {
         showObjectChanges: true,
       },
@@ -79,10 +99,11 @@ describe('Stream', () => {
       streamCreationResult.senderCap,
       streamCreationResult.streamId
     )
-    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
-    txb.setGasBudget(gasCost)
-    const response = await signer.signAndExecuteTransactionBlock({
-      transactionBlock: txb,
+    const senderAddress = await sender.getAddress()
+    txb.setSender(senderAddress)
+    const txBytes = await txb.build({ provider: rpcProvider })
+    const response = await sender.signAndExecuteTransactionBlock({
+      transactionBlock: txBytes,
       options: {
         showObjectChanges: true,
       },
@@ -96,10 +117,11 @@ describe('Stream', () => {
       streamCreationResult.senderCap,
       streamCreationResult.streamId
     )
-    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
-    txb.setGasBudget(gasCost)
-    const response = await signer.signAndExecuteTransactionBlock({
-      transactionBlock: txb,
+    const senderAddress = await sender.getAddress()
+    txb.setSender(senderAddress)
+    const txBytes = await txb.build({ provider: rpcProvider })
+    const response = await sender.signAndExecuteTransactionBlock({
+      transactionBlock: txBytes,
       options: {
         showObjectChanges: true,
       },
@@ -112,10 +134,32 @@ describe('Stream', () => {
       coinType,
       streamCreationResult.streamId
     )
-    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
-    txb.setGasBudget(gasCost)
-    const response = await signer.signAndExecuteTransactionBlock({
-      transactionBlock: txb,
+    const recipientAddress = await recipient.getAddress()
+    txb.setSender(recipientAddress)
+    txb.setGasBudget(30000000) // otherwise error - not able to determine a budget
+    const txBytes = await txb.build({ provider: rpcProvider })
+    const response = await recipient.signAndExecuteTransactionBlock({
+      transactionBlock: txBytes,
+      options: {
+        showObjectChanges: true,
+      },
+    })
+    console.log(response)
+  })
+
+  test('setNewRecipientTransaction', async () => {
+    const anotherRecipientAddress = await anotherRecipient.getAddress()
+    const txb = stream.setNewRecipientTransaction(
+      coinType,
+      streamCreationResult.streamId,
+      anotherRecipientAddress
+    )
+    const recipientAddress = await recipient.getAddress()
+    txb.setSender(recipientAddress)
+    txb.setGasBudget(30000000) // otherwise error - not able to determine a budget
+    const txBytes = await txb.build({ provider: rpcProvider })
+    const response = await recipient.signAndExecuteTransactionBlock({
+      transactionBlock: txBytes,
       options: {
         showObjectChanges: true,
       },
@@ -129,10 +173,11 @@ describe('Stream', () => {
       streamCreationResult.senderCap,
       streamCreationResult.streamId
     )
-    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
-    txb.setGasBudget(gasCost)
-    const response = await signer.signAndExecuteTransactionBlock({
-      transactionBlock: txb,
+    const senderAddress = await sender.getAddress()
+    txb.setSender(senderAddress)
+    const txBytes = await txb.build({ provider: rpcProvider })
+    const response = await sender.signAndExecuteTransactionBlock({
+      transactionBlock: txBytes,
       options: {
         showObjectChanges: true,
       },
@@ -141,22 +186,27 @@ describe('Stream', () => {
   })
 
   test('getStreams works', async () => {
-    const address = '0x7905ae3ed4a5a77284684fa86fd83c38a9f138b0cc390721c46bca3aaafaf26c'
-    const streams = await stream.getStreams(address, StreamDirection.OUT)
+    const senderAddress = await sender.getAddress()
+    let streams = await stream.getStreams(senderAddress, StreamDirection.OUT)
     console.log(streams)
-    expect(streams.length).toBeDefined
+    const recipientAddress = await recipient.getAddress()
+    streams = await stream.getStreams(recipientAddress, StreamDirection.IN)
+    console.log(streams)
   })
 
-  // admin functions
+  // ---- admin functions -----
+
   test('registerCoinTransaction works', async () => {
+    const adminAddress = await admin.getAddress()
     const txb = stream.registerCoinTransaction(
       coinType, // TODO replace it with another coin type
-      100
+      20
     )
-    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
-    txb.setGasBudget(gasCost)
-    const response = await signer.signAndExecuteTransactionBlock({
-      transactionBlock: txb,
+    txb.setSender(adminAddress)
+    txb.setGasBudget(30000000) // otherwise error - not able to determine a budget
+    const txBytes = await txb.build({ provider: rpcProvider })
+    const response = await admin.signAndExecuteTransactionBlock({
+      transactionBlock: txBytes,
       options: {
         showObjectChanges: true,
       },
@@ -165,14 +215,15 @@ describe('Stream', () => {
   })
 
   test('setFeePointTransaction works', async () => {
+    const adminAddress = await admin.getAddress()
     const txb = stream.setFeePointTransaction(
-      coinType, // TODO replace it with another coin type
-      80
+      coinType,
+      10
     )
-    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
-    txb.setGasBudget(gasCost)
-    const response = await signer.signAndExecuteTransactionBlock({
-      transactionBlock: txb,
+    txb.setSender(adminAddress)
+    const txBytes = await txb.build({ provider: rpcProvider })
+    const response = await admin.signAndExecuteTransactionBlock({
+      transactionBlock: txBytes,
       options: {
         showObjectChanges: true,
       },
@@ -181,13 +232,15 @@ describe('Stream', () => {
   })
 
   test('setFeeRecipientTransaction works', async () => {
+    const adminAddress = await admin.getAddress()
+    const senderAddress = await sender.getAddress()
     const txb = stream.setFeeRecipientTransaction(
-      'newFeeRecipient' // TODO replace it with valid address
+      senderAddress
     )
-    const gasCost = await signer.getGasCostEstimation({ transactionBlock: txb })
-    txb.setGasBudget(gasCost)
-    const response = await signer.signAndExecuteTransactionBlock({
-      transactionBlock: txb,
+    txb.setSender(adminAddress)
+    const txBytes = await txb.build({ provider: rpcProvider })
+    const response = await admin.signAndExecuteTransactionBlock({
+      transactionBlock: txBytes,
       options: {
         showObjectChanges: true,
       },

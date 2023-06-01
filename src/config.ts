@@ -20,12 +20,12 @@ export type Config = {
 export const TESTNET_CONFIG: Config = {
   network: Network.testnet,
   fullNodeUrl: 'https://fullnode.testnet.sui.io/',
-  packageObjectId: '0xd4a8b17cbc665b5a92311e14cdb24de7abbfae9d9616babdd5f9f732a2987311',
-  globalConfigObjectId: '0xa1a1eec8f02b609612c7c6ac6dac44f86db9c3b6e65b020c809270fbb0895ab4',
-  coinConfigsObjectId: '0x7fc9b9e34eb6bad2bab11334c84bc1fcd2623d680d92849fcc07c08a2a2f9feb',
-  incomingStreamObjectId: '0x55fe3b02615c2dd3baf4f5f1f54337f20e65f1f16a36700078bb4fec43d7899e',
-  outgoingStreamObjectId: '0x9302b20ecc6d84820b795172219aba934186a9364d353e6e445819f5c5618b34',
-  manageCap: '0xadc0149b9a66f58d75cedc8a5e3a3c11f17f7106c741093652153a31118bf8d2',
+  packageObjectId: '0x675a02bc73c9e4d49deb51ea7b2e641fabbc8073e1bc15a8516ef189a9704a9f',
+  globalConfigObjectId: '0x84ae09a02fb8f25eb8adb5197aaaa24a65b6d0bfd1e4181b969a19087bc375d4',
+  coinConfigsObjectId: '0xe669867b35b4f259e8c16a0b34735e28e2b68a734059352f79396ccf1c5babeb',
+  incomingStreamObjectId: '0x369df6d622bba0ca39c0ac35e75b6fcdff74d4bb1ef4896deee6ed1ceb8d4e30',
+  outgoingStreamObjectId: '0x9cae1f58859b68f1b365ef7737f287d7e9a5f9a92ffc82e0251ffac93f26813e',
+  manageCap: '0x560ddd917ff702aed09eb6bc30b5cdcba8a63b6ed6e91423c9c18f953d10d81b',
 }
 
 export function getConfig(network: Network): Config {
