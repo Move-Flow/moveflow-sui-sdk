@@ -1,11 +1,15 @@
 {
-  "name": "moveflow-sui-sdk",
-  "version": "0.0.1",
+  "name": "@moveflow/sui-sdk.js",
+  "version": "0.2.6",
   "description": "Typescript SDK for MoveFlow on SUI blockchain",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Move-Flow/moveflow-sui-sdk.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "bugs": {
     "url": "https://github.com/Move-Flow/moveflow-sui-sdk/issues"
