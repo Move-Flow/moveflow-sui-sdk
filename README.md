@@ -93,11 +93,19 @@ const response = await wallet.signAndExecuteTransactionBlock({
 
 ```
 
-5. close a stream 
+5. Resume a stream
+
 ```
-const payload = sdk.stream.close({ id: 29 })
-const txid = await SignAndSubmitTransaction(payload)
-````
+const tx = stream.resumeTransaction(
+  coinType,
+  streamCreationResult.senderCap,
+  streamCreationResult.streamId
+)
+const response = await wallet.signAndExecuteTransactionBlock({
+  transactionBlock: tx as any,
+});
+
+```
  
 ### query streams 
 
