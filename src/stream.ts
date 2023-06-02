@@ -6,6 +6,8 @@ import {
   SuiTransactionBlockResponse,
   ObjectId,
   SuiAddress,
+  isValidSuiAddress,
+  isValidSuiObjectId,
 } from '@mysten/sui.js'
 import { Network, Config, getConfig } from './config'
 
@@ -91,15 +93,24 @@ export class Stream {
     name: string,
     remark: string,
     recipient: SuiAddress,
-    depositAmount: number,
-    startTime: number,
-    stopTime: number,
-    interval = 1000,
+    depositAmount: bigint,
+    startTime: number, // seconds
+    stopTime: number, // seconds
+    interval = 1000, // seconds
     closeable = true,
     modifiable = true
   ): TransactionBlock {
-    // TODO add validation of input parameters,
-    // such as validity of coin_type length of name and remark, validity of recipient
+    this.ensureValidCoinType(coinType)
+    if (name.length > 1024) throw new Error('name exceeds the maximum length 1024 characters')
+    if (remark.length > 1024) throw new Error('remark exceeds the maximum length 1024 characters')
+    if (!isValidSuiAddress(recipient)) throw new Error(`${recipient} is not a valid address`)
+    if (depositAmount < 0) throw new Error(`${depositAmount} is negative`)
+    this.ensureValidTime(startTime)
+    this.ensureValidTime(stopTime)
+    if (stopTime <= startTime) throw new Error(`stopTime ${stopTime} is before startTime ${startTime}`)
+    if (stopTime <= Date.now() / 1000) throw new Error(`stopTime ${stopTime} is in the past`)
+    this.ensureValidTime(interval)
+
     const txb = new TransactionBlock()
     // TODO txb.gas should be replaced with the coin determined by coin_type
     const coins = txb.splitCoins(txb.gas, [txb.pure(depositAmount)])
@@ -130,6 +141,14 @@ export class Stream {
     streamId: ObjectId,
     newStopTime: number
   ): Promise<TransactionBlock> {
+    this.ensureValidCoinType(coinType)
+    if (!isValidSuiObjectId(senderCap)) throw new Error(`${senderCap} is not a valid ObjectId`)
+    if (!isValidSuiObjectId(streamId)) throw new Error(`${streamId} is not a valid ObjectId`)
+    this.ensureValidTime(newStopTime)
+    const streamInfo = await this.getStreamById(streamId)
+    if (newStopTime <= streamInfo.stopTime) {
+      throw new Error(`newStopTime ${newStopTime} is earlier than the stopTime ${streamInfo.stopTime}`)
+    }
     const txb = new TransactionBlock()
     // TODO need to figure out how to get the right coin
     const coins = txb.splitCoins(txb.gas, [txb.pure(100000)])
@@ -151,6 +170,9 @@ export class Stream {
     senderCap: ObjectId,
     streamId: ObjectId
   ): TransactionBlock {
+    this.ensureValidCoinType(coinType)
+    if (!isValidSuiObjectId(senderCap)) throw new Error(`${senderCap} is not a valid ObjectId`)
+    if (!isValidSuiObjectId(streamId)) throw new Error(`${streamId} is not a valid ObjectId`)
     const txb = new TransactionBlock()
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::pause`,
@@ -169,6 +191,9 @@ export class Stream {
     senderCap: ObjectId,
     streamId: ObjectId
   ): TransactionBlock {
+    this.ensureValidCoinType(coinType)
+    if (!isValidSuiObjectId(senderCap)) throw new Error(`${senderCap} is not a valid ObjectId`)
+    if (!isValidSuiObjectId(streamId)) throw new Error(`${streamId} is not a valid ObjectId`)
     const txb = new TransactionBlock()
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::resume`,
@@ -186,6 +211,8 @@ export class Stream {
     coinType: string,
     streamId: ObjectId
   ): TransactionBlock {
+    this.ensureValidCoinType(coinType)
+    if (!isValidSuiObjectId(streamId)) throw new Error(`${streamId} is not a valid ObjectId`)
     const txb = new TransactionBlock()
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::withdraw`,
@@ -203,6 +230,9 @@ export class Stream {
     streamId: ObjectId,
     newRecipient: SuiAddress
   ): TransactionBlock {
+    this.ensureValidCoinType(coinType)
+    if (!isValidSuiObjectId(streamId)) throw new Error(`${streamId} is not a valid ObjectId`)
+    if (!isValidSuiAddress(newRecipient)) throw new Error(` ${newRecipient} is not a valid address`)
     const txb = new TransactionBlock()
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::set_new_recipient`,
@@ -221,6 +251,9 @@ export class Stream {
     senderCap: ObjectId,
     streamId: ObjectId
   ): TransactionBlock {
+    this.ensureValidCoinType(coinType)
+    if (!isValidSuiObjectId(senderCap)) throw new Error(`${senderCap} is not a valid ObjectId`)
+    if (!isValidSuiObjectId(streamId)) throw new Error(`${streamId} is not a valid ObjectId`)
     const txb = new TransactionBlock()
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::close`,
@@ -256,6 +289,7 @@ export class Stream {
   }
 
   async getStreams(address: SuiAddress, direction: StreamDirection): Promise<StreamInfo[]> {
+    if (!isValidSuiAddress(address)) throw new Error(`${address} is not a valid address`)
     const parentId = direction == StreamDirection.IN ? this._config.incomingStreamObjectId : this._config.outgoingStreamObjectId
     const streamIds = await this._rpcProvider.getDynamicFieldObject({
       parentId,
@@ -277,6 +311,47 @@ export class Stream {
       }
     }
     return streams
+  }
+
+  async getStreamById(id: ObjectId): Promise<StreamInfo> {
+    if (!isValidSuiObjectId(id)) throw new Error(`${id} is not a valid ObjectId`)
+    const _record = await this._rpcProvider.getObject({
+      id,
+      options: { showContent: true, showOwner: true },
+    })
+
+    const streamInfo = this.convert(_record.data?.content as DynamicFields)
+    return streamInfo
+  }
+
+  withdrawable(stream: StreamInfo): bigint {
+    if (stream.closed || stream.pauseInfo.paused || stream.remainingAmount == 0) {
+      return BigInt(0)
+    }
+    const lastWithdrawTime = stream.lastWithdrawTime
+    const stopTime = stream.stopTime
+    const interval = stream.interval
+    const accPausedTime = stream.pauseInfo.accPausedTime
+    const currTime = Date.now() / 1000 // seconds
+
+    const timeSpan = Math.min(currTime, stopTime) - lastWithdrawTime - accPausedTime
+    const numOfIntervals = Math.floor(timeSpan / interval)
+    const gross = BigInt(numOfIntervals) * BigInt(stream.ratePerInterval) / BigInt(1000)
+    const fee = gross * BigInt(stream.feeInfo.feePoint) / BigInt(10000)
+    return gross - fee
+  }
+
+  async getSenderCaps(owner: SuiAddress) {
+    if (!isValidSuiAddress(owner)) throw new Error(`${owner} is not a valid address`)
+    // TODO handle pagination properly
+    const senderObjects = await this._rpcProvider.getOwnedObjects({
+      owner,
+      options: { showContent: true },
+      filter: {
+        StructType: `${this._config.packageObjectId}::stream::SenderCap`,
+      },
+    })
+    return senderObjects
   }
 
   private convert(streamRecord: DynamicFields): StreamInfo {
@@ -317,15 +392,44 @@ export class Stream {
 
   private extractCoinType(type: string): string {
     const match = type.match(/.+<(.+)>/)
-    if (!match) throw new Error('missing coin type')
+    if (!match) throw new Error(`${type} is missing coin type`)
     return match[1]
   }
 
-  // admin functions
+  private ensurePositiveInteger(num: number) {
+    if (num < 0 || !Number.isInteger(num)) {
+      throw new Error(`The number ${num} is negative`)
+    }
+  }
+
+  private ensureValidTime(time: number) {
+    this.ensurePositiveInteger(time)
+    if (time > 253402300799) { // 9999/12/31 23:59:59
+      throw new Error(`The time ${time} is later than 9999/12/31 23:59:59`)
+    }
+  }
+
+  private ensureValidFeePoint(feePoint: number) {
+    this.ensurePositiveInteger(feePoint)
+    if (feePoint > 255) {
+      throw new Error(`The feePoint ${feePoint} exceeds 255`)
+    }
+  }
+
+  // basic format validation
+  private ensureValidCoinType(coinType: string) {
+    const parts = coinType.split('::')
+    if (parts.length != 3) throw new Error(`${coinType} is not in a valid format`)
+  }
+
+  // ----- admin functions -----
+
   registerCoinTransaction(
     coinType: string,
     feePoint: number
   ): TransactionBlock {
+    this.ensureValidCoinType(coinType)
+    this.ensureValidFeePoint(feePoint)
     const txb = new TransactionBlock()
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::register_coin`,
@@ -343,6 +447,8 @@ export class Stream {
     coinType: string,
     newFeePoint: number
   ): TransactionBlock {
+    this.ensureValidCoinType(coinType)
+    this.ensureValidFeePoint(newFeePoint)
     const txb = new TransactionBlock()
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::set_fee_point`,

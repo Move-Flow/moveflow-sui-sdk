@@ -43,10 +43,11 @@ describe('Stream', () => {
   test('createTransaction works', async () => {
     const name = 'first'
     const remark = 'first sui stream'
-    const depositAmount = 10000000
-    const startTime = Date.now() - 1000 * 60
-    const duration = 24 * 60 * 60 * 1000 // 1 day
+    const depositAmount = BigInt(10000000)
+    const startTime = Math.floor(Date.now() / 1000) - 10
+    const duration = 24 * 60 * 60 // 1 day
     const stopTime = startTime + duration
+    const interval = 1 // 1 second
     const recipientAddress = await recipient.getAddress()
     const txb = stream.createTransaction(
       coinType,
@@ -55,7 +56,8 @@ describe('Stream', () => {
       recipientAddress,
       depositAmount,
       startTime,
-      stopTime
+      stopTime,
+      interval
     )
     const senderAddress = await sender.getAddress()
     txb.setSender(senderAddress)
@@ -70,10 +72,14 @@ describe('Stream', () => {
     console.log(streamCreationResult)
   })
 
+  test('getStreamById works', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    expect(streamInfo.id).toBe(streamCreationResult.streamId)
+  })
+
   test('extendTransaction works', async () => {
-    const coinType = '0x2::sui::SUI'
-    const duration = 24 * 60 * 60 * 1000 // 1 day
-    const stopTime = Date.now() + duration * 2
+    const duration = 24 * 60 * 60 // 1 day
+    const stopTime = Math.floor(Date.now() / 1000) + duration * 2
     const txb = await stream.extendTransaction(
       coinType,
       streamCreationResult.senderCap,
@@ -111,6 +117,12 @@ describe('Stream', () => {
     console.log(response)
   })
 
+  test('withdrawable should be 0 when stream is paused', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const withdrawable = stream.withdrawable(streamInfo)
+    expect(withdrawable).toBe(BigInt(0))
+  })
+
   test('resumeTransaction works', async () => {
     const txb = stream.resumeTransaction(
       coinType,
@@ -127,6 +139,12 @@ describe('Stream', () => {
       },
     })
     console.log(response)
+  })
+
+  test('withdrawable should be greater than 0 when stream is resumed', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const withdrawable = stream.withdrawable(streamInfo)
+    expect(withdrawable).toBeGreaterThan(0)
   })
 
   test('withdrawTransaction works', async () => {
@@ -183,6 +201,12 @@ describe('Stream', () => {
       },
     })
     console.log(response)
+  })
+
+  test('withdrawable should be 0 when stream is closed', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const withdrawable = stream.withdrawable(streamInfo)
+    expect(withdrawable).toBe(BigInt(0))
   })
 
   test('getStreams works', async () => {
