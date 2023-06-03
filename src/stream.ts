@@ -43,7 +43,7 @@ export type StreamInfo = {
   closed: boolean
   featureInfo: FeatureInfo
   feeInfo: FeeInfo
-  pauseInfo: PauseInfo
+  pause_info: PauseInfo
   balance: number
 }
 
@@ -295,11 +295,11 @@ export class Stream {
   withdrawable(stream: StreamInfo): bigint {
       const lastWithdrawnTime = Number(stream.lastWithdrawTime);
       // const startTime = Number(stream.startTime);
-      // const paused = stream.pauseInfo.paused;
+      // const paused = stream.pause_info.paused;
 
       const stopTime = Number(stream.stopTime);
       const interval = Number(stream.interval);
-      const acc_pasued_time = stream.pauseInfo.accPausedTime;
+      const acc_pasued_time = stream.pause_info.accPausedTime;
 
       const currTime = Date.parse(new Date() as any) / 1000;
       if (currTime <= lastWithdrawnTime) {                                                      // 未开始
@@ -356,10 +356,10 @@ export class Stream {
         feeRecipient: streamRecord.fields.fee_info.fields.fee_recipient,
         feePoint: streamRecord.fields.fee_info.fields.fee_point,
       },
-      pauseInfo: {
-        paused: streamRecord.fields.pauseInfo.fields.paused,
-        pausedAt: parseInt(streamRecord.fields.pauseInfo.fields.pause_at),
-        accPausedTime: parseInt(streamRecord.fields.pauseInfo.fields.acc_paused_time),
+      pause_info: {
+        paused: streamRecord.fields.pause_info.fields.paused,
+        pausedAt: parseInt(streamRecord.fields.pause_info.fields.pause_at),
+        accPausedTime: parseInt(streamRecord.fields.pause_info.fields.acc_paused_time),
       },
       balance: parseInt(streamRecord.fields.balance),
     }

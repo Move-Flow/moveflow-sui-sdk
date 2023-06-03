@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@moveflow/sui-sdk.js": "^0.3.1",
+    "@moveflow/sui-sdk.js": "^0.3.4",
     "@mysten/sui.js": "0.34.0",
     "@suiet/wallet-kit": "0.2.11",
     "@types/node": "18.11.11",

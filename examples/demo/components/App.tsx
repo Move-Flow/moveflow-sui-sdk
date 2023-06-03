@@ -28,7 +28,7 @@ function App() {
   const coinType = '0x2::sui::SUI'
 
   let streamCreationResult: StreamCreationResult = {
-    streamId: '0x1f612145242fde5b22ddf68838dce2d8cd5629a021caa2e4093a370548ab17a4',
+    streamId: '0xb82f7e5d3cab6f756514bec94eb50605b9a7a99400e0f0053c470e03f1eb1499',
     senderCap: '',
     recipientCap: '',
   }
@@ -37,65 +37,7 @@ function App() {
     if (!value) return ''
     // @ts-ignore
     return value.toString('hex')
-  }
-
-  async function handleExecuteMoveCall(target: string | undefined) {
-    if (!target) return;
-
-    try {
-      const tx = new TransactionBlock()
-      tx.moveCall({
-        target: target as any,
-        arguments: [
-          tx.pure('Suiet NFT'),
-          tx.pure('Suiet Sample NFT'),
-          tx.pure('https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4')
-        ]
-      })
-      const resData = await wallet.signAndExecuteTransactionBlock({
-        transactionBlock: tx,
-      });
-      console.log('executeMoveCall success', resData);
-      alert('executeMoveCall succeeded (see response in the console)');
-    } catch (e) {
-      console.error('executeMoveCall failed', e);
-      alert('executeMoveCall failed (see response in the console)');
-    }
-  }
-
-  async function handleSignMsg() {
-    try {
-      const msg = 'Hello world!'
-      const msgBytes = new TextEncoder().encode(msg)
-      const result = await wallet.signMessage({
-        message: msgBytes
-      })
-      const verifyResult = wallet.verifySignedMessage(result)
-      console.log('verify signedMessage', verifyResult)
-      if (!verifyResult) {
-        alert(`signMessage succeed, but verify signedMessage failed`)
-      } else {
-        alert(`signMessage succeed, and verify signedMessage succeed!`)
-      }
-    } catch (e) {
-      console.error('signMessage failed', e)
-      alert('signMessage failed (see response in the console)')
-    }
-  }
-
-  const chainName = (chainId: string | undefined) => {
-    switch (chainId) {
-      case SuiChainId.MAIN_NET:
-        return 'Mainnet'
-      case SuiChainId.TEST_NET:
-        return 'Testnet'
-      case SuiChainId.DEV_NET:
-        return 'Devnet'
-      default:
-        return 'Unknown'
-    }
-  }
-
+  } 
 
 
   async function handleCreateStream() {
@@ -180,7 +122,7 @@ function App() {
 
     const tx = stream.withdrawTransaction(
       coinType, 
-      streamCreationResult.streamId 
+      '0xb82f7e5d3cab6f756514bec94eb50605b9a7a99400e0f0053c470e03f1eb1499' 
     )
     const response = await wallet.signAndExecuteTransactionBlock({
       transactionBlock: tx as any,
@@ -199,20 +141,30 @@ function App() {
   async function handleGetIncomingStreams() {    
     const address = '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
     const streams = await stream.getStreams(address, StreamDirection.IN)
-    console.log("streams:", streams)
+
+    let list = streams.map(m=> {
+      return {
+        startTime: (new Date(m.startTime * 1000)).toLocaleString() ,
+        stoptTime: (new Date(m.stopTime * 1000)).toLocaleString(),
+        remainingAmount: m.remainingAmount,
+        depositAmount: m.depositAmount,
+        withdrawble: stream.withdrawable(m)
+      }
+    })
+    console.log("streams list:", list)
   }
 
   
   async function getDrawableByid() {    
-    const id = '0x1f612145242fde5b22ddf68838dce2d8cd5629a021caa2e4093a370548ab17a4'
+    const id = '0xb82f7e5d3cab6f756514bec94eb50605b9a7a99400e0f0053c470e03f1eb1499'
     const _stream = await stream.getStreamById(id)
 
-    const streams = await stream.withdrawable(_stream)
-    console.log("streams:", streams)
+    const _withdrawable = stream.withdrawable(_stream)
+    console.log("streams:", _withdrawable)
   }
 
   async function getStreambyId() {    
-    const id = '0x1f612145242fde5b22ddf68838dce2d8cd5629a021caa2e4093a370548ab17a4'
+    const id = '0xb82f7e5d3cab6f756514bec94eb50605b9a7a99400e0f0053c470e03f1eb1499'
     const streams = await stream.getStreamById(id)
     console.log("streams:", streams)
   }

@@ -178,7 +178,7 @@ console.log("list:", list)
 
 
 
-## ref: contract version 0.3.1
+## ref: contract version 0.3.4
 
 ```
 packageObjectId: '0x8adcbe225d672f56ee96abc51481887e106661ef899ccc5a7dec7161b790be69',
