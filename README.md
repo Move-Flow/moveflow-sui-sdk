@@ -181,11 +181,11 @@ console.log("list:", list)
 ## ref: contract version 0.3.1
 
 ```
-packageObjectId: '0xd4a8b17cbc665b5a92311e14cdb24de7abbfae9d9616babdd5f9f732a2987311',
-globalConfigObjectId: '0xa1a1eec8f02b609612c7c6ac6dac44f86db9c3b6e65b020c809270fbb0895ab4',
-coinConfigsObjectId: '0x7fc9b9e34eb6bad2bab11334c84bc1fcd2623d680d92849fcc07c08a2a2f9feb',
-incomingStreamObjectId: '0x55fe3b02615c2dd3baf4f5f1f54337f20e65f1f16a36700078bb4fec43d7899e',
-outgoingStreamObjectId: '0x9302b20ecc6d84820b795172219aba934186a9364d353e6e445819f5c5618b34',
+packageObjectId: '0x8adcbe225d672f56ee96abc51481887e106661ef899ccc5a7dec7161b790be69',
+globalConfigObjectId: '0x95b3e1f1fefef450e4fdbf6d5279ca2421429a5bd2ce7da50cf32b62c5f326b2',
+coinConfigsObjectId: '0x64d9d712a435f282cbd5756b7b3d215a5ef81f385ac3339a6b3d23119e4c3a52',
+incomingStreamObjectId: '0x2fb090feef48968b937ff470273dcab417d4ad870d7e336fcd7b656fdeeb936a',
+outgoingStreamObjectId: '0x204f815be7a8eaf535e4899556a14d07dd2e29a35148ac249577858ba9583b8a',
 
 ```
 
