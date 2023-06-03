@@ -48,18 +48,19 @@ describe('Stream', () => {
     const duration = 24 * 60 * 60 // 1 day
     const stopTime = startTime + duration
     const interval = 1 // 1 second
+    const senderAddress = await sender.getAddress()
     const recipientAddress = await recipient.getAddress()
-    const txb = stream.createTransaction(
+    const txb = await stream.createTransaction(
       coinType,
       name,
       remark,
+      senderAddress,
       recipientAddress,
       depositAmount,
       startTime,
       stopTime,
       interval
     )
-    const senderAddress = await sender.getAddress()
     txb.setSender(senderAddress)
     const txBytes = await txb.build({ provider: rpcProvider })
     const response = await sender.signAndExecuteTransactionBlock({
@@ -69,6 +70,7 @@ describe('Stream', () => {
       },
     })
     streamCreationResult = stream.getStreamCreationResult(response)
+    console.log('--- streamCreationResult ---')
     console.log(streamCreationResult)
   })
 
@@ -96,6 +98,7 @@ describe('Stream', () => {
         showObjectChanges: true,
       },
     })
+    console.log('--- extendTransaction Response ---')
     console.log(response)
   })
 
@@ -114,6 +117,7 @@ describe('Stream', () => {
         showObjectChanges: true,
       },
     })
+    console.log('--- pauseTransaction Response ---')
     console.log(response)
   })
 
@@ -138,6 +142,7 @@ describe('Stream', () => {
         showObjectChanges: true,
       },
     })
+    console.log('--- resumeTransaction Response ---')
     console.log(response)
   })
 
@@ -162,6 +167,7 @@ describe('Stream', () => {
         showObjectChanges: true,
       },
     })
+    console.log('--- withdrawTransaction Response ---')
     console.log(response)
   })
 
@@ -182,6 +188,7 @@ describe('Stream', () => {
         showObjectChanges: true,
       },
     })
+    console.log('--- setNewRecipientTransaction Response ---')
     console.log(response)
   })
 
@@ -200,6 +207,7 @@ describe('Stream', () => {
         showObjectChanges: true,
       },
     })
+    console.log('--- closeTransaction Response ---')
     console.log(response)
   })
 
@@ -215,10 +223,34 @@ describe('Stream', () => {
     console.log(streams)
     const recipientAddress = await recipient.getAddress()
     streams = await stream.getStreams(recipientAddress, StreamDirection.IN)
+    console.log('--- getStreams Response ---')
     console.log(streams)
   })
 
+  test('getSenderCaps works', async () => {
+    const senderAddress = await sender.getAddress()
+    const senderCaps = await stream.getSenderCaps(senderAddress)
+    console.log('--- senderCaps ---')
+    console.log(senderCaps)
+    expect(senderCaps.length).toBeGreaterThan(0)
+  })
+
+  test('getRecipientCaps works', async () => {
+    const recipientAddress = await recipient.getAddress()
+    const recipientCaps = await stream.getRecipientCaps(recipientAddress)
+    console.log('--- recipientCaps ---')
+    console.log(recipientCaps)
+    expect(recipientCaps.length).toBeGreaterThan(0)
+  })
+
   // ---- admin functions -----
+
+  test('getSupportedCoins works', async () => {
+    const coins = await stream.getSupportedCoins()
+    console.log('--- coins ---')
+    console.log(coins)
+    expect(coins.length).toBeGreaterThan(0)
+  })
 
   test('registerCoinTransaction works', async () => {
     const adminAddress = await admin.getAddress()
@@ -235,6 +267,7 @@ describe('Stream', () => {
         showObjectChanges: true,
       },
     })
+    console.log('--- registerCoinTransaction Response ---')
     console.log(response)
   })
 
@@ -252,6 +285,7 @@ describe('Stream', () => {
         showObjectChanges: true,
       },
     })
+    console.log('--- setFeePointTransaction Response ---')
     console.log(response)
   })
 
@@ -269,6 +303,7 @@ describe('Stream', () => {
         showObjectChanges: true,
       },
     })
+    console.log('--- setFeeRecipientTransaction Response ---')
     console.log(response)
   })
 })

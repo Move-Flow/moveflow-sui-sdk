@@ -8,6 +8,7 @@ import {
   SuiAddress,
   isValidSuiAddress,
   isValidSuiObjectId,
+  normalizeSuiObjectId,
 } from '@mysten/sui.js'
 import { Network, Config, getConfig } from './config'
 
@@ -60,6 +61,11 @@ export type StreamCreationResult = {
   recipientCap: string
 }
 
+export type CoinConfig = {
+  coinType: string
+  feePoint: number
+}
+
 type DynamicFields = {
   type: string
   fields: Record<string, any>
@@ -72,6 +78,8 @@ export class Stream {
   private _config: Config
 
   private _rpcProvider: JsonRpcProvider
+
+  private readonly SUI: string = this.normalizeCoinType('0x2::sui::SUI')
 
   constructor(network: Network) {
     this._network = network
@@ -88,10 +96,11 @@ export class Stream {
     return Network[this._network]
   }
 
-  createTransaction(
+  async createTransaction(
     coinType: string,
     name: string,
     remark: string,
+    sender: SuiAddress,
     recipient: SuiAddress,
     depositAmount: bigint,
     startTime: number, // seconds
@@ -99,7 +108,7 @@ export class Stream {
     interval = 1000, // seconds
     closeable = true,
     modifiable = true
-  ): TransactionBlock {
+  ): Promise<TransactionBlock> {
     this.ensureValidCoinType(coinType)
     if (name.length > 1024) throw new Error('name exceeds the maximum length 1024 characters')
     if (remark.length > 1024) throw new Error('remark exceeds the maximum length 1024 characters')
@@ -111,15 +120,33 @@ export class Stream {
     if (stopTime <= Date.now() / 1000) throw new Error(`stopTime ${stopTime} is in the past`)
     this.ensureValidTime(interval)
 
+    const isSUI = this.isSUI(coinType)
+    const balance = await this._rpcProvider.getBalance({ owner: sender, coinType })
+    const totalBalance = BigInt(balance.totalBalance)
+    const lockedBalance = balance.lockedBalance.number ? BigInt(balance.lockedBalance.number) : BigInt(0)
+    const availableBalance = totalBalance - lockedBalance
+    if (isSUI && availableBalance <= depositAmount || !isSUI && totalBalance < depositAmount) {
+      throw new Error(`the sender ${sender} has not enough balance of ${coinType} to pay the deposit ${depositAmount}`)
+    }
     const txb = new TransactionBlock()
-    // TODO txb.gas should be replaced with the coin determined by coin_type
-    const coins = txb.splitCoins(txb.gas, [txb.pure(depositAmount)])
+    let coin
+    if (this.isSUI(coinType)) {
+      coin = txb.splitCoins(txb.gas, [txb.pure(depositAmount)])[0]
+    } else {
+      const coinObjectIds = await this.getCoins(sender, coinType, depositAmount)
+      if (coinObjectIds.length == 0) throw new Error(`no coin is available in the sender's account ${sender}`)
+      if (coinObjectIds.length == 1) {
+        coin = txb.object(coinObjectIds[0])
+      } else {
+        coin = txb.mergeCoins(txb.object(coinObjectIds[0]), coinObjectIds.slice(1).map(id => txb.object(id)))
+      }
+    }
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::create`,
       typeArguments: [coinType],
       arguments: [
         txb.object(this._config.globalConfigObjectId),
-        coins[0],
+        coin,
         txb.pure(name),
         txb.pure(remark),
         txb.pure(recipient),
@@ -341,17 +368,36 @@ export class Stream {
     return gross - fee
   }
 
-  async getSenderCaps(owner: SuiAddress) {
+  async getSenderCaps(owner: SuiAddress): Promise<ObjectId[]> {
+    return this.getOwnedObjects(owner, `${this._config.packageObjectId}::stream::SenderCap`)
+  }
+
+  async getRecipientCaps(owner: SuiAddress): Promise<ObjectId[]> {
+    return this.getOwnedObjects(owner, `${this._config.packageObjectId}::stream::RecipientCap`)
+  }
+
+  private async getOwnedObjects(owner: SuiAddress, structType: string): Promise<ObjectId[]> {
     if (!isValidSuiAddress(owner)) throw new Error(`${owner} is not a valid address`)
-    // TODO handle pagination properly
-    const senderObjects = await this._rpcProvider.getOwnedObjects({
-      owner,
-      options: { showContent: true },
-      filter: {
-        StructType: `${this._config.packageObjectId}::stream::SenderCap`,
-      },
-    })
-    return senderObjects
+    const objectIds = Array<string>()
+    let hasNextPage = true
+    let nextCursor = null
+    while (hasNextPage) {
+      const senderObjects = await this._rpcProvider.getOwnedObjects({
+        owner,
+        filter: {
+          StructType: structType,
+        },
+        cursor: nextCursor,
+      })
+      for (const senderObject of senderObjects.data) {
+        if (senderObject.data) {
+          objectIds.push(senderObject.data.objectId)
+        }
+      }
+      hasNextPage = senderObjects.hasNextPage
+      nextCursor = senderObjects.nextCursor
+    }
+    return objectIds
   }
 
   private convert(streamRecord: DynamicFields): StreamInfo {
@@ -420,9 +466,58 @@ export class Stream {
   private ensureValidCoinType(coinType: string) {
     const parts = coinType.split('::')
     if (parts.length != 3) throw new Error(`${coinType} is not in a valid format`)
+    if (!isValidSuiObjectId(normalizeSuiObjectId(parts[0]))) {
+      throw new Error(`${coinType} is not in a valid format`)
+    }
+  }
+
+  private normalizeCoinType(coinType: string): string {
+    const parts = coinType.split('::')
+    return `${normalizeSuiObjectId(parts[0])}::${parts[1]}::${parts[2]}`
+  }
+
+  private isSUI(coinType: string): boolean {
+    return this.normalizeCoinType(coinType) === this.SUI
+  }
+
+  private async getCoins(owner: SuiAddress, coinType: string, amount: bigint): Promise<ObjectId[]> {
+    const coinObjectIds: ObjectId[] = []
+    let total = BigInt(0)
+    let hasNextPage = true
+    let nextCursor = null
+    while (hasNextPage && total < amount) {
+      const paginatedCoins = await this._rpcProvider.getCoins({ owner, coinType, cursor: nextCursor })
+      hasNextPage = paginatedCoins.hasNextPage
+      nextCursor = paginatedCoins.nextCursor
+      for (const coin of paginatedCoins.data) {
+        if (!coin.lockedUntilEpoch) {
+          total += BigInt(coin.balance)
+          coinObjectIds.push(coin.coinObjectId)
+          if (total >= amount) break
+        }
+      }
+    }
+    return coinObjectIds
   }
 
   // ----- admin functions -----
+
+  async getSupportedCoins(): Promise<CoinConfig[]> {
+    const coinConfigs: CoinConfig[] = []
+    const coinConfigsObject = await this._rpcProvider.getObject({
+      id: this._config.coinConfigsObjectId,
+      options: {
+        showContent: true,
+      },
+    })
+    const content = coinConfigsObject.data?.content as DynamicFields
+    console.log(content.fields)
+    coinConfigs.push({
+      coinType: content.fields.value.fields.coin_type,
+      feePoint: content.fields.value.fields.fee_point,
+    })
+    return coinConfigs
+  }
 
   registerCoinTransaction(
     coinType: string,
