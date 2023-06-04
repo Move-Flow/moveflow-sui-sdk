@@ -9,6 +9,7 @@ import {
   isValidSuiAddress,
   isValidSuiObjectId,
   normalizeSuiObjectId,
+  TransactionArgument,
 } from '@mysten/sui.js'
 import { Network, Config, getConfig } from './config'
 
@@ -112,6 +113,7 @@ export class Stream {
     this.ensureValidCoinType(coinType)
     if (name.length > 1024) throw new Error('name exceeds the maximum length 1024 characters')
     if (remark.length > 1024) throw new Error('remark exceeds the maximum length 1024 characters')
+    if (!isValidSuiAddress(sender)) throw new Error(`${sender} is not a valid address`)
     if (!isValidSuiAddress(recipient)) throw new Error(`${recipient} is not a valid address`)
     if (depositAmount < 0) throw new Error(`${depositAmount} is negative`)
     this.ensureValidTime(startTime)
@@ -129,18 +131,7 @@ export class Stream {
       throw new Error(`the sender ${sender} has not enough balance of ${coinType} to pay the deposit ${depositAmount}`)
     }
     const txb = new TransactionBlock()
-    let coin
-    if (this.isSUI(coinType)) {
-      coin = txb.splitCoins(txb.gas, [txb.pure(depositAmount)])[0]
-    } else {
-      const coinObjectIds = await this.getCoins(sender, coinType, depositAmount)
-      if (coinObjectIds.length == 0) throw new Error(`no coin is available in the sender's account ${sender}`)
-      if (coinObjectIds.length == 1) {
-        coin = txb.object(coinObjectIds[0])
-      } else {
-        coin = txb.mergeCoins(txb.object(coinObjectIds[0]), coinObjectIds.slice(1).map(id => txb.object(id)))
-      }
-    }
+    const coin = await this.getCoin(txb, sender, coinType, depositAmount)
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::create`,
       typeArguments: [coinType],
@@ -164,11 +155,13 @@ export class Stream {
 
   async extendTransaction(
     coinType: string,
+    sender: SuiAddress,
     senderCap: ObjectId,
     streamId: ObjectId,
     newStopTime: number
   ): Promise<TransactionBlock> {
     this.ensureValidCoinType(coinType)
+    if (!isValidSuiAddress(sender)) throw new Error(`${sender} is not a valid address`)
     if (!isValidSuiObjectId(senderCap)) throw new Error(`${senderCap} is not a valid ObjectId`)
     if (!isValidSuiObjectId(streamId)) throw new Error(`${streamId} is not a valid ObjectId`)
     this.ensureValidTime(newStopTime)
@@ -176,16 +169,18 @@ export class Stream {
     if (newStopTime <= streamInfo.stopTime) {
       throw new Error(`newStopTime ${newStopTime} is earlier than the stopTime ${streamInfo.stopTime}`)
     }
+
     const txb = new TransactionBlock()
-    // TODO need to figure out how to get the right coin
-    const coins = txb.splitCoins(txb.gas, [txb.pure(100000)])
+    const numOfIntervals = (newStopTime - streamInfo.stopTime) / streamInfo.interval
+    const depositAmount: bigint = BigInt(Math.ceil(streamInfo.ratePerInterval * numOfIntervals / 1000))
+    const coin = await this.getCoin(txb, sender, coinType, depositAmount)
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::extend`,
       typeArguments: [coinType],
       arguments: [
         txb.object(senderCap),
         txb.object(streamId),
-        coins[0],
+        coin,
         txb.pure(newStopTime),
       ],
     })
@@ -499,6 +494,29 @@ export class Stream {
     }
     return coinObjectIds
   }
+
+  private async getCoin(
+    txb: TransactionBlock,
+    owner: SuiAddress,
+    coinType: string,
+    amount: bigint
+  ): Promise<TransactionArgument> {
+    let coin: TransactionArgument
+    if (this.isSUI(coinType)) {
+      coin = txb.splitCoins(txb.gas, [txb.pure(amount)])[0]
+    } else {
+      const coinObjectIds = await this.getCoins(owner, coinType, amount)
+      if (coinObjectIds.length == 0)
+        throw new Error(`no coin is available in the account ${owner}`)
+      if (coinObjectIds.length == 1) {
+        coin = txb.object(coinObjectIds[0])
+      } else {
+        coin = txb.mergeCoins(txb.object(coinObjectIds[0]), coinObjectIds.slice(1).map(id => txb.object(id)))
+      }
+    }
+    return coin
+  }
+
 
   // ----- admin functions -----
 

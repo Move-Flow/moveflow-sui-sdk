@@ -82,13 +82,14 @@ describe('Stream', () => {
   test('extendTransaction works', async () => {
     const duration = 24 * 60 * 60 // 1 day
     const stopTime = Math.floor(Date.now() / 1000) + duration * 2
+    const senderAddress = await sender.getAddress()
     const txb = await stream.extendTransaction(
       coinType,
+      senderAddress,
       streamCreationResult.senderCap,
       streamCreationResult.streamId,
       stopTime
     )
-    const senderAddress = await sender.getAddress()
     txb.setSender(senderAddress)
     txb.setGasBudget(30000000) // otherwise error - not able to determine a budget
     const txBytes = await txb.build({ provider: rpcProvider })
