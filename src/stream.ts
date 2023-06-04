@@ -668,6 +668,7 @@ export class Stream {
   setFeeRecipientTransaction(
     newFeeRecipient: SuiAddress
   ): TransactionBlock {
+    if (!isValidSuiAddress(newFeeRecipient)) throw new Error(`${newFeeRecipient} is not a valid address`)
     const txb = new TransactionBlock()
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::set_fee_recipient`,
