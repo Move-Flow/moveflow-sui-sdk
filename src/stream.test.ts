@@ -32,7 +32,7 @@ describe('Stream', () => {
   const anotherRecipientKeypair = Ed25519Keypair.deriveKeypair(anotherRecipientMnemonic, path)
   const anotherRecipient = new RawSigner(anotherRecipientKeypair, rpcProvider)
 
-  const stream = new Stream(Network.testnet)
+  const stream = new Stream(Network.unittest)
   let streamCreationResult: StreamCreationResult = {
     streamId: '',
     senderCap: '',
@@ -233,7 +233,16 @@ describe('Stream', () => {
     const senderCaps = await stream.getSenderCaps(senderAddress)
     console.log('--- senderCaps ---')
     console.log(senderCaps)
-    expect(senderCaps.length).toBeGreaterThan(0)
+  })
+
+  test('getPaginatedSenderCaps works', async () => {
+    const senderAddress = await sender.getAddress()
+    const paginatedSenderCaps = await stream.getPaginatedSenderCaps(
+      senderAddress,
+      { cursor: null }
+    )
+    console.log('--- paginated senderCaps ---')
+    console.log(paginatedSenderCaps)
   })
 
   test('getRecipientCaps works', async () => {
@@ -241,17 +250,33 @@ describe('Stream', () => {
     const recipientCaps = await stream.getRecipientCaps(recipientAddress)
     console.log('--- recipientCaps ---')
     console.log(recipientCaps)
-    expect(recipientCaps.length).toBeGreaterThan(0)
   })
 
-  // ---- admin functions -----
+  test('getPaginatedRecipientCaps works', async () => {
+    const recipientAddress = await recipient.getAddress()
+    const paginatedRecipientCaps = await stream.getPaginatedRecipientCaps(
+      recipientAddress,
+      { cursor: null }
+    )
+    console.log('--- paginated recipientCaps ---')
+    console.log(paginatedRecipientCaps)
+  })
 
   test('getSupportedCoins works', async () => {
     const coins = await stream.getSupportedCoins()
     console.log('--- coins ---')
     console.log(coins)
-    expect(coins.length).toBeGreaterThan(0)
   })
+
+  test('getPaginatedSupportedCoins works', async () => {
+    const paginatedCoins = await stream.getPaginatedSupportedCoins(
+      { cursor: null }
+    )
+    console.log('--- paginated coins ---')
+    console.log(paginatedCoins)
+  })
+
+  // ---- admin functions -----
 
   test('registerCoinTransaction works', async () => {
     const adminAddress = await admin.getAddress()

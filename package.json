@@ -1,6 +1,6 @@
 {
   "name": "moveflow-sui-sdk",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Typescript SDK for MoveFlow on SUI blockchain",
   "license": "GPL-3.0",
   "repository": {
@@ -24,6 +24,7 @@
   "scripts": {
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
+    "coverage": "jest --coverage",
     "clean": "rm -rf dist build package",
     "ts-node": "ts-node",
     "docs": "typedoc --entryPoints src/index.ts",

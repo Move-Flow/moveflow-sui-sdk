@@ -10,6 +10,8 @@ import {
   isValidSuiObjectId,
   normalizeSuiObjectId,
   TransactionArgument,
+  PaginationArguments,
+  PaginatedObjectsResponse
 } from '@mysten/sui.js'
 import { Network, Config, getConfig } from './config'
 
@@ -65,6 +67,18 @@ export type StreamCreationResult = {
 export type CoinConfig = {
   coinType: string
   feePoint: number
+}
+
+export type PaginatedCoinConfigs = {
+  coinConfigs: CoinConfig[],
+  nextCursor: string | null,
+  hasNextPage: boolean
+}
+
+export type PaginatedObjectIds = {
+  objectIds: ObjectId[],
+  nextCursor: PaginatedObjectsResponse['nextCursor'],
+  hasNextPage: boolean
 }
 
 type DynamicFields = {
@@ -363,36 +377,83 @@ export class Stream {
     return gross - fee
   }
 
+  // use this function if there aren't many (over 100) senderCaps
   async getSenderCaps(owner: SuiAddress): Promise<ObjectId[]> {
     return this.getOwnedObjects(owner, `${this._config.packageObjectId}::stream::SenderCap`)
   }
 
+  // use this function if there are many (over 100) senderCaps
+  async getPaginatedSenderCaps(
+    owner: SuiAddress,
+    paginationArguments: PaginationArguments<PaginatedObjectsResponse['nextCursor']>
+  ): Promise<PaginatedObjectIds> {
+    return this.getPaginatedOwnedObjects(
+      owner,
+      `${this._config.packageObjectId}::stream::SenderCap`,
+      paginationArguments
+    )
+  }
+
+  // use this function if there aren't many (over 100) recipientCaps
   async getRecipientCaps(owner: SuiAddress): Promise<ObjectId[]> {
     return this.getOwnedObjects(owner, `${this._config.packageObjectId}::stream::RecipientCap`)
   }
 
+
+  // use this function if there are many (over 100) recipientCaps
+  async getPaginatedRecipientCaps(
+    owner: SuiAddress,
+    paginationArguments: PaginationArguments<PaginatedObjectsResponse['nextCursor']>
+  ): Promise<PaginatedObjectIds> {
+    return this.getPaginatedOwnedObjects(
+      owner,
+      `${this._config.packageObjectId}::stream::RecipientCap`,
+      paginationArguments
+    )
+  }
+
   private async getOwnedObjects(owner: SuiAddress, structType: string): Promise<ObjectId[]> {
     if (!isValidSuiAddress(owner)) throw new Error(`${owner} is not a valid address`)
-    const objectIds = Array<string>()
+    const objectIds: ObjectId[] = []
     let hasNextPage = true
     let nextCursor = null
     while (hasNextPage) {
-      const senderObjects = await this._rpcProvider.getOwnedObjects({
+      const paginatedOwnedObjects = await this.getPaginatedOwnedObjects(
         owner,
-        filter: {
-          StructType: structType,
-        },
-        cursor: nextCursor,
-      })
-      for (const senderObject of senderObjects.data) {
-        if (senderObject.data) {
-          objectIds.push(senderObject.data.objectId)
-        }
-      }
-      hasNextPage = senderObjects.hasNextPage
-      nextCursor = senderObjects.nextCursor
+        structType,
+        { cursor: nextCursor }
+      )
+      objectIds.push(...paginatedOwnedObjects.objectIds)
+      hasNextPage = paginatedOwnedObjects.hasNextPage
+      nextCursor = paginatedOwnedObjects.nextCursor
     }
     return objectIds
+  }
+
+  private async getPaginatedOwnedObjects(
+    owner: SuiAddress,
+    structType: string,
+    paginationArguments: PaginationArguments<PaginatedObjectsResponse['nextCursor']>
+  ): Promise<PaginatedObjectIds> {
+    if (!isValidSuiAddress(owner)) throw new Error(`${owner} is not a valid address`)
+    const objectIds: ObjectId[] = []
+    const ownedObjects = await this._rpcProvider.getOwnedObjects({
+      owner,
+      filter: {
+        StructType: structType,
+      },
+      ...paginationArguments,
+    })
+    for (const ownedObject of ownedObjects.data) {
+      if (ownedObject.data) {
+        objectIds.push(ownedObject.data.objectId)
+      }
+    }
+    return {
+      objectIds,
+      nextCursor: ownedObjects.nextCursor,
+      hasNextPage: ownedObjects.hasNextPage
+    }
   }
 
   private convert(streamRecord: DynamicFields): StreamInfo {
@@ -421,9 +482,9 @@ export class Stream {
         feePoint: streamRecord.fields.fee_info.fields.fee_point,
       },
       pauseInfo: {
-        paused: streamRecord.fields.pauseInfo.fields.paused,
-        pausedAt: parseInt(streamRecord.fields.pauseInfo.fields.pause_at),
-        accPausedTime: parseInt(streamRecord.fields.pauseInfo.fields.acc_paused_time),
+        paused: streamRecord.fields.pause_info.fields.paused,
+        pausedAt: parseInt(streamRecord.fields.pause_info.fields.pause_at),
+        accPausedTime: parseInt(streamRecord.fields.pause_info.fields.acc_paused_time),
       },
       balance: parseInt(streamRecord.fields.balance),
     }
@@ -517,25 +578,54 @@ export class Stream {
     return coin
   }
 
-
-  // ----- admin functions -----
-
+  // use this function if there aren't many (over 100) coins supported
   async getSupportedCoins(): Promise<CoinConfig[]> {
     const coinConfigs: CoinConfig[] = []
-    const coinConfigsObject = await this._rpcProvider.getObject({
-      id: this._config.coinConfigsObjectId,
-      options: {
-        showContent: true,
-      },
-    })
-    const content = coinConfigsObject.data?.content as DynamicFields
-    console.log(content.fields)
-    coinConfigs.push({
-      coinType: content.fields.value.fields.coin_type,
-      feePoint: content.fields.value.fields.fee_point,
-    })
+    let hasNextPage = true
+    let nextCursor = null
+    while (hasNextPage) {
+      const paginatedCoinConfigs = await this.getPaginatedSupportedCoins({
+        cursor: nextCursor
+      })
+      coinConfigs.push(...paginatedCoinConfigs.coinConfigs)
+      hasNextPage = paginatedCoinConfigs.hasNextPage
+      nextCursor = paginatedCoinConfigs.nextCursor
+    }
     return coinConfigs
   }
+
+  // use this function if there are many (over 100) coins supported
+  async getPaginatedSupportedCoins(
+    paginationArguments: PaginationArguments<string | null>
+  ): Promise<PaginatedCoinConfigs> {
+    const coinConfigs: CoinConfig[] = []
+    const coinConfigsObject = await this._rpcProvider.getDynamicFields({
+      parentId: this._config.coinConfigsObjectId,
+      ...paginationArguments
+    })
+    const objectIds: ObjectId[] = []
+    for (let data of coinConfigsObject.data) {
+      objectIds.push(data.objectId)
+    }
+    const coinConfigObjects = await this._rpcProvider.multiGetObjects({
+      ids: objectIds,
+      options: { showContent: true }
+    })
+    for (let coinConfigObject of coinConfigObjects) {
+      const content = coinConfigObject.data?.content as DynamicFields
+      coinConfigs.push({
+        coinType: content.fields.value.fields.coin_type,
+        feePoint: content.fields.value.fields.fee_point,
+      })
+    }
+    return {
+      coinConfigs,
+      nextCursor: coinConfigsObject.nextCursor,
+      hasNextPage: coinConfigsObject.hasNextPage
+    }
+  }
+
+  // ----- admin functions -----
 
   registerCoinTransaction(
     coinType: string,

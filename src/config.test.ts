@@ -1,9 +1,14 @@
-import { Network, Config, TESTNET_CONFIG, getConfig } from './config'
+import { Network, Config, getConfig, TESTNET_CONFIG, UNITTEST_CONFIG } from './config'
 
 describe('getConfig function', () => {
   test('should return TESTNET_CONFIG for testnet', () => {
     const config: Config = getConfig(Network.testnet)
     expect(config).toBe(TESTNET_CONFIG)
+  })
+
+  test('should return UNITTEST_CONFIG for testnet', () => {
+    const config: Config = getConfig(Network.unittest)
+    expect(config).toBe(UNITTEST_CONFIG)
   })
 
   test('should throw an error for unsupported networks', () => {
