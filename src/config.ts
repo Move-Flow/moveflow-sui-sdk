@@ -40,6 +40,12 @@ export const UNITTEST_CONFIG: Config = {
   manageCap: '0x54ea464f37e14ee61169c3e6c881eabe86ec05f1e0cef45b00ac387ff0bd4885',
 }
 
+/**
+ * This function returns the config for a given network
+ *
+ * @param network the network, i.e., devnet, testnet or mainnet
+ * @returns the config which can be used to construct a Stream object
+ */
 export function getConfig(network: Network): Config {
   switch (network) {
     case Network.testnet:

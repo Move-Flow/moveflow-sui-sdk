@@ -15,23 +15,50 @@ import {
 } from '@mysten/sui.js'
 import { Network, Config, getConfig } from './config'
 
+/**
+ * FeatureInfo describes features of a payment stream
+ *
+ * pauseable - if the payment stream can be paused by the sender
+ * senderCloseable - if the payment can be closed by the sender
+ * recipientModifiable - not used now
+ */
 export type FeatureInfo = {
   pauseable: boolean
   senderCloseable: boolean
   recipientModifiable: boolean
 }
 
+/**
+ * FeeInfo describes fee info of a payment stream
+ *
+ * feeRecipient - whenever a payment is withdrawn from the stream, a fee is paid to the recipient
+ * feePoint - the denominator of fee point is 10000, i.e, 25 means 0.25%
+ */
 export type FeeInfo = {
   feeRecipient: SuiAddress
   feePoint: number
 }
 
+/**
+ * PauseInfo describes pausing info of a payment stream
+ *
+ * paused - if the stream is paused or not
+ * pausedAt - the time when the stream was paused, the value is unix epoch time in seconds
+ * accPausedTime - accumulated paused time of multiple pauses. It's reset to 0 once a payment is withdrawn
+ */
 export type PauseInfo = {
   paused: boolean
   pausedAt: number
   accPausedTime: number
 }
 
+/**
+ * StreamInfo describes a payment stream
+ *
+ * Explanation of most fields are omitted as the names are self-explanatory.
+ * The interval is time duration in seconds.
+ * The lastWithdrawTime, startTime and stopTime are unix epoch time in seconds.
+ */
 export type StreamInfo = {
   id: ObjectId
   coinType: string
@@ -45,6 +72,7 @@ export type StreamInfo = {
   startTime: number
   stopTime: number
   depositAmount: number
+  withdrawnAmount: number
   remainingAmount: number
   closed: boolean
   featureInfo: FeatureInfo
@@ -53,15 +81,21 @@ export type StreamInfo = {
   balance: number
 }
 
+/**
+ * StreamDirection enum describes the relationship between the payment stream and the users.
+ *
+ * OUT - outgoing stream. If a user sends money to the stream, the stream is the outgoing stream to the user.
+ * IN - incoming stream. If a user receives money from the stream, the stream is the incoming stream to the user.
+ */
 export enum StreamDirection {
   OUT,
   IN
 }
 
 export type StreamCreationResult = {
-  streamId: string
-  senderCap: string
-  recipientCap: string
+  streamId: ObjectId
+  senderCap: ObjectId
+  recipientCap: ObjectId
 }
 
 export type CoinConfig = {
@@ -111,6 +145,23 @@ export class Stream {
     return Network[this._network]
   }
 
+  /**
+   * This function builds a TransactionBlock to create a new payment stream
+   *
+   * @param coinType the coin type that is used in the payment stream, e.g., 0x2::sui::SUI
+   *
+   * @param name the name of the stream, max 1024 characters
+   * @param remark the remark of the stream, max 1024 characters
+   * @param sender the payment sender's address, which must be the same as the TransactionBlock signer
+   * @param recipient the payment receiver's address
+   * @param depositAmount the initial deposit amount of the coin specified by the coinType parameter
+   * @param startTime the unix epoch time in seconds, i.e., Date.now() / 1000
+   * @param stopTime the unix epoch time in seconds
+   * @param interval the payment interval in seconds, and the deposit is divided evenly among the intervals. Default to 60 seconds
+   * @param closeable if the stream can be closed by the sender. Default to true
+   * @param modifiable if the stream can be modified by the recipient. Default to true. Not effective now
+   * @returns the TransactionBlock which can be signed to create a new payment stream
+   */
   async createTransaction(
     coinType: string,
     name: string,
@@ -118,9 +169,9 @@ export class Stream {
     sender: SuiAddress,
     recipient: SuiAddress,
     depositAmount: bigint,
-    startTime: number, // seconds
-    stopTime: number, // seconds
-    interval = 1000, // seconds
+    startTime: number,
+    stopTime: number,
+    interval = 60,
     closeable = true,
     modifiable = true
   ): Promise<TransactionBlock> {
@@ -167,6 +218,16 @@ export class Stream {
     return txb
   }
 
+  /**
+   * This function builds a TransactionBlock to extend an existing payment stream
+   *
+   * @param coinType the coin type that is used in the payment stream, e.g., 0x2::sui::SUI
+   * @param sender the payment sender's address, which must be the same as the TransactionBlock signer
+   * @param senderCap the sender capability object id
+   * @param streamId the payment stream object id
+   * @param newStopTime the new stop time of the payment stream
+   * @returns the TransactionBlock which can be signed to extend an existing payment stream
+   */
   async extendTransaction(
     coinType: string,
     sender: SuiAddress,
@@ -201,6 +262,14 @@ export class Stream {
     return txb
   }
 
+  /**
+   * This function builds a TransactionBlock to pause an existing payment stream
+   *
+   * @param coinType the coin type that is used in the payment stream, e.g., 0x2::sui::SUI
+   * @param senderCap the sender capability object id
+   * @param streamId the payment stream object id
+   * @returns the TransactionBlock which can be signed to pause an existing payment stream
+   */
   pauseTransaction(
     coinType: string,
     senderCap: ObjectId,
@@ -222,6 +291,14 @@ export class Stream {
     return txb
   }
 
+  /**
+   * This function builds a TransactionBlock to resume a paused payment stream
+   *
+   * @param coinType the coin type that is used in the payment stream, e.g., 0x2::sui::SUI
+   * @param senderCap the sender capability object id
+   * @param streamId the payment stream object id
+   * @returns the TransactionBlock which can be signed to resume a paused payment stream
+   */
   resumeTransaction(
     coinType: string,
     senderCap: ObjectId,
@@ -243,6 +320,13 @@ export class Stream {
     return txb
   }
 
+  /**
+   * This function builds a TransactionBlock to withdraw from a payment stream, whose signer must be the recipient.
+   *
+   * @param coinType the coin type that is used in the payment stream, e.g., 0x2::sui::SUI
+   * @param streamId the payment stream object id
+   * @returns the TransactionBlock which can be signed to withdraw from a payment stream.
+   */
   withdrawTransaction(
     coinType: string,
     streamId: ObjectId
@@ -261,6 +345,13 @@ export class Stream {
     return txb
   }
 
+  /**
+   * This function builds a TransactionBlock to set a new recipient of a payment stream, whose signer must be the current recipient.
+   *
+   * @param coinType the coin type that is used in the payment stream, e.g., 0x2::sui::SUI
+   * @param streamId the payment stream object id
+   * @returns the TransactionBlock which can be signed to set a new recipient of the payment stream.
+   */
   setNewRecipientTransaction(
     coinType: string,
     streamId: ObjectId,
@@ -282,6 +373,14 @@ export class Stream {
     return txb
   }
 
+  /**
+   * This function builds a TransactionBlock to close an existing payment stream
+   *
+   * @param coinType the coin type that is used in the payment stream, e.g., 0x2::sui::SUI
+   * @param senderCap the sender capability object id
+   * @param streamId the payment stream object id
+   * @returns the TransactionBlock which can be signed to close an existing payment stream
+   */
   closeTransaction(
     coinType: string,
     senderCap: ObjectId,
@@ -303,6 +402,12 @@ export class Stream {
     return txb
   }
 
+  /**
+   * This function parses a createTransaction response
+   *
+   * @param response the transaction response of the createTransaction
+   * @returns a StreamCreationResult struct
+   */
   getStreamCreationResult(response: SuiTransactionBlockResponse): StreamCreationResult {
     if (!response.objectChanges) throw new Error('the response is missing object changes')
     let streamId = '', senderCap = '', recipientCap = ''
@@ -324,6 +429,13 @@ export class Stream {
     return streamCreationResult
   }
 
+  /**
+   * This function get the payment streams specified by the parameters
+   *
+   * @param address the sender or recipient's address of the payment streams, depending on the direction
+   * @param direction the direction of the payment stream, IN or OUT. If IN, then the address is the recipient, otherwise, sender
+   * @returns an array of StreamInfo objects satisfying the parameters
+   */
   async getStreams(address: SuiAddress, direction: StreamDirection): Promise<StreamInfo[]> {
     if (!isValidSuiAddress(address)) throw new Error(`${address} is not a valid address`)
     const parentId = direction == StreamDirection.IN ? this._config.incomingStreamObjectId : this._config.outgoingStreamObjectId
@@ -349,6 +461,12 @@ export class Stream {
     return streams
   }
 
+  /**
+   * This function get the stream info specified by the id
+   *
+   * @param id the stream id
+   * @returns the StreamInfo object
+   */
   async getStreamById(id: ObjectId): Promise<StreamInfo> {
     if (!isValidSuiObjectId(id)) throw new Error(`${id} is not a valid ObjectId`)
     const _record = await this._rpcProvider.getObject({
@@ -360,6 +478,12 @@ export class Stream {
     return streamInfo
   }
 
+  /**
+   * This function returns the amount of the withdrawable fund in the payment stream
+   *
+   * @param stream the StreamInfo object
+   * @returns the amount of the withdrawable fund
+   */
   withdrawable(stream: StreamInfo): bigint {
     if (stream.closed || stream.pauseInfo.paused || stream.remainingAmount == 0) {
       return BigInt(0)
@@ -377,12 +501,23 @@ export class Stream {
     return gross - fee
   }
 
-  // use this function if there aren't many (over 100) senderCaps
+  /**
+   * This function returns all the SenderCap object ids of the owner. Use this function if there aren't many (over 100) SenderCaps
+   *
+   * @param owner the owner of the SenderCaps
+   * @returns an array of SenderCap object ids
+   */
   async getSenderCaps(owner: SuiAddress): Promise<ObjectId[]> {
     return this.getOwnedObjects(owner, `${this._config.packageObjectId}::stream::SenderCap`)
   }
 
-  // use this function if there are many (over 100) senderCaps
+  /**
+   * This function returns PaginatedObjectIds. Use this function if there are many (over 100) senderCaps
+   *
+   * @param owner the owner of the SenderCaps
+   * @param paginationArguments pagination arguments, such as cursor, limit
+   * @returns PaginatedObjectIds object
+   */
   async getPaginatedSenderCaps(
     owner: SuiAddress,
     paginationArguments: PaginationArguments<PaginatedObjectsResponse['nextCursor']>
@@ -394,13 +529,24 @@ export class Stream {
     )
   }
 
-  // use this function if there aren't many (over 100) recipientCaps
+  /**
+   * This function returns all the RecipientCap object ids of the owner. Use this function if there aren't many (over 100) RecipientCaps
+   *
+   * @param owner the owner of the RecipientCaps
+   * @returns an array of RecipientCap object ids
+   */
   async getRecipientCaps(owner: SuiAddress): Promise<ObjectId[]> {
     return this.getOwnedObjects(owner, `${this._config.packageObjectId}::stream::RecipientCap`)
   }
 
 
-  // use this function if there are many (over 100) recipientCaps
+  /**
+   * This function returns PaginatedObjectIds. Use this function if there are many (over 100) recipientCaps
+   *
+   * @param owner the owner of the RecipientCaps
+   * @param paginationArguments pagination arguments, such as cursor, limit
+   * @returns PaginatedObjectIds object
+   */
   async getPaginatedRecipientCaps(
     owner: SuiAddress,
     paginationArguments: PaginationArguments<PaginatedObjectsResponse['nextCursor']>
@@ -411,6 +557,63 @@ export class Stream {
       paginationArguments
     )
   }
+
+  /**
+   * This function returns an array of all the supported coins. Use this function if there aren't many (over 100) coins supported.
+   *
+   * @returns all the supported coins
+   */
+  async getSupportedCoins(): Promise<CoinConfig[]> {
+    const coinConfigs: CoinConfig[] = []
+    let hasNextPage = true
+    let nextCursor = null
+    while (hasNextPage) {
+      const paginatedCoinConfigs = await this.getPaginatedSupportedCoins({
+        cursor: nextCursor
+      })
+      coinConfigs.push(...paginatedCoinConfigs.coinConfigs)
+      hasNextPage = paginatedCoinConfigs.hasNextPage
+      nextCursor = paginatedCoinConfigs.nextCursor
+    }
+    return coinConfigs
+  }
+
+  /**
+   * This function returns PaginatedCoinConfigs. Use this function if there are many (over 100) coins supported.
+   *
+   * @returns paginated supported coins
+   */
+  async getPaginatedSupportedCoins(
+    paginationArguments: PaginationArguments<string | null>
+  ): Promise<PaginatedCoinConfigs> {
+    const coinConfigs: CoinConfig[] = []
+    const coinConfigsObject = await this._rpcProvider.getDynamicFields({
+      parentId: this._config.coinConfigsObjectId,
+      ...paginationArguments
+    })
+    const objectIds: ObjectId[] = []
+    for (let data of coinConfigsObject.data) {
+      objectIds.push(data.objectId)
+    }
+    const coinConfigObjects = await this._rpcProvider.multiGetObjects({
+      ids: objectIds,
+      options: { showContent: true }
+    })
+    for (let coinConfigObject of coinConfigObjects) {
+      const content = coinConfigObject.data?.content as DynamicFields
+      coinConfigs.push({
+        coinType: content.fields.value.fields.coin_type,
+        feePoint: content.fields.value.fields.fee_point,
+      })
+    }
+    return {
+      coinConfigs,
+      nextCursor: coinConfigsObject.nextCursor,
+      hasNextPage: coinConfigsObject.hasNextPage
+    }
+  }
+
+  // ---- private functions ----
 
   private async getOwnedObjects(owner: SuiAddress, structType: string): Promise<ObjectId[]> {
     if (!isValidSuiAddress(owner)) throw new Error(`${owner} is not a valid address`)
@@ -470,6 +673,7 @@ export class Stream {
       startTime: parseInt(streamRecord.fields.start_time),
       stopTime: parseInt(streamRecord.fields.stop_time),
       depositAmount: parseInt(streamRecord.fields.deposit_amount),
+      withdrawnAmount: parseInt(streamRecord.fields.withdrawn_amount),
       remainingAmount: parseInt(streamRecord.fields.remaining_amount),
       closed: streamRecord.fields.closed,
       featureInfo: {
@@ -578,55 +782,16 @@ export class Stream {
     return coin
   }
 
-  // use this function if there aren't many (over 100) coins supported
-  async getSupportedCoins(): Promise<CoinConfig[]> {
-    const coinConfigs: CoinConfig[] = []
-    let hasNextPage = true
-    let nextCursor = null
-    while (hasNextPage) {
-      const paginatedCoinConfigs = await this.getPaginatedSupportedCoins({
-        cursor: nextCursor
-      })
-      coinConfigs.push(...paginatedCoinConfigs.coinConfigs)
-      hasNextPage = paginatedCoinConfigs.hasNextPage
-      nextCursor = paginatedCoinConfigs.nextCursor
-    }
-    return coinConfigs
-  }
-
-  // use this function if there are many (over 100) coins supported
-  async getPaginatedSupportedCoins(
-    paginationArguments: PaginationArguments<string | null>
-  ): Promise<PaginatedCoinConfigs> {
-    const coinConfigs: CoinConfig[] = []
-    const coinConfigsObject = await this._rpcProvider.getDynamicFields({
-      parentId: this._config.coinConfigsObjectId,
-      ...paginationArguments
-    })
-    const objectIds: ObjectId[] = []
-    for (let data of coinConfigsObject.data) {
-      objectIds.push(data.objectId)
-    }
-    const coinConfigObjects = await this._rpcProvider.multiGetObjects({
-      ids: objectIds,
-      options: { showContent: true }
-    })
-    for (let coinConfigObject of coinConfigObjects) {
-      const content = coinConfigObject.data?.content as DynamicFields
-      coinConfigs.push({
-        coinType: content.fields.value.fields.coin_type,
-        feePoint: content.fields.value.fields.fee_point,
-      })
-    }
-    return {
-      coinConfigs,
-      nextCursor: coinConfigsObject.nextCursor,
-      hasNextPage: coinConfigsObject.hasNextPage
-    }
-  }
 
   // ----- admin functions -----
 
+  /**
+   * This function builds a TransactionBlock to register a coin type
+   *
+   * @param coinType the coin type that is used in the payment streams, e.g., 0x2::sui::SUI
+   * @param feePoint the denominator of fee point is 10000, i.e, 25 means 0.25%
+   * @returns the TransactionBlock which can be signed by the admin to register a new coin type
+   */
   registerCoinTransaction(
     coinType: string,
     feePoint: number
@@ -646,6 +811,13 @@ export class Stream {
     return txb
   }
 
+  /**
+   * This function builds a TransactionBlock to set a new fee point for the coin type
+   *
+   * @param coinType the coin type that is used in the payment streams, e.g., 0x2::sui::SUI
+   * @param newFeePoint the denominator of fee point is 10000, i.e, 25 means 0.25%
+   * @returns the TransactionBlock which can be signed by the admin to set the new fee point
+   */
   setFeePointTransaction(
     coinType: string,
     newFeePoint: number
@@ -665,6 +837,12 @@ export class Stream {
     return txb
   }
 
+  /**
+   * This function builds a TransactionBlock to set a new fee recipient
+   *
+   * @param newFeeRecipient the new fee recipient address
+   * @returns the TransactionBlock which can be signed by the admin to set the new fee recipient
+   */
   setFeeRecipientTransaction(
     newFeeRecipient: SuiAddress
   ): TransactionBlock {
