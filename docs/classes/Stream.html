@@ -20,7 +20,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">Stream</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L123">src/stream.ts:123</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L123">src/stream.ts:123</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -45,6 +45,7 @@
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Methods</h3>
 <div class="tsd-index-list"><a href="Stream.html#closeTransaction" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>close<wbr/>Transaction</span></a>
+<a href="Stream.html#closeable" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>closeable</span></a>
 <a href="Stream.html#convert" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>convert</span></a>
 <a href="Stream.html#createTransaction" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Transaction</span></a>
 <a href="Stream.html#ensurePositiveInteger" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>ensure<wbr/>Positive<wbr/>Integer</span></a>
@@ -69,6 +70,8 @@
 <a href="Stream.html#isSUI" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>isSUI</span></a>
 <a href="Stream.html#normalizeCoinType" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>normalize<wbr/>Coin<wbr/>Type</span></a>
 <a href="Stream.html#pauseTransaction" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>pause<wbr/>Transaction</span></a>
+<a href="Stream.html#pauseable" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>pauseable</span></a>
+<a href="Stream.html#recipientModifiable" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>recipient<wbr/>Modifiable</span></a>
 <a href="Stream.html#registerCoinTransaction" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>register<wbr/>Coin<wbr/>Transaction</span></a>
 <a href="Stream.html#resumeTransaction" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>resume<wbr/>Transaction</span></a>
 <a href="Stream.html#setFeePointTransaction" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Fee<wbr/>Point<wbr/>Transaction</span></a>
@@ -91,29 +94,29 @@
 <h5><span class="tsd-kind-parameter">network</span>: <a href="../enums/Network.html" class="tsd-signature-type tsd-kind-enum">Network</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Stream.html" class="tsd-signature-type tsd-kind-class">Stream</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L133">src/stream.ts:133</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L133">src/stream.ts:133</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="SUI" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>SUI</span><a href="#SUI" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">SUI</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L131">src/stream.ts:131</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L131">src/stream.ts:131</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="_config" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>_config</span><a href="#_config" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">_config</span><span class="tsd-signature-symbol">:</span> <a href="../types/Config.html" class="tsd-signature-type tsd-kind-type-alias">Config</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L127">src/stream.ts:127</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L127">src/stream.ts:127</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="_network" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>_network</span><a href="#_network" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">_network</span><span class="tsd-signature-symbol">:</span> <a href="../enums/Network.html" class="tsd-signature-type tsd-kind-enum">Network</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L125">src/stream.ts:125</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L125">src/stream.ts:125</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="_rpcProvider" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>_rpc<wbr/>Provider</span><a href="#_rpcProvider" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">_rpc<wbr/>Provider</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type ">JsonRpcProvider</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L129">src/stream.ts:129</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L129">src/stream.ts:129</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Accessors</h2>
 <section class="tsd-panel tsd-member"><a id="network" class="tsd-anchor"></a>
@@ -123,7 +126,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <a href="../enums/Network.html" class="tsd-signature-type tsd-kind-enum">Network</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L140">src/stream.ts:140</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L140">src/stream.ts:140</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="networkName" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>network<wbr/>Name</span><a href="#networkName" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -131,7 +134,7 @@
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L144">src/stream.ts:144</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L144">src/stream.ts:144</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member"><a id="closeTransaction" class="tsd-anchor"></a>
@@ -159,7 +162,29 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">TransactionBlock</span></h4><p>the TransactionBlock which can be signed to close an existing payment stream</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L384">src/stream.ts:384</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L384">src/stream.ts:384</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="closeable" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>closeable</span><a href="#closeable" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="closeable.closeable-1"><span class="tsd-kind-call-signature">closeable</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">stream</span>, <span class="tsd-kind-parameter">sender</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#closeable.closeable-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>This function returns true if the stream can be closed by the sender, and false otherwise</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">stream</span>: <a href="../types/StreamInfo.html" class="tsd-signature-type tsd-kind-type-alias">StreamInfo</a></h5>
+<div class="tsd-comment tsd-typography"><p>the StreamInfo object</p>
+</div></li>
+<li>
+<h5><span class="tsd-kind-parameter">sender</span>: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>the sender address</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><p>true if the stream can be closed by the sender, and false otherwise</p>
+<aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L511">src/stream.ts:511</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="convert" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>convert</span><a href="#convert" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -172,7 +197,7 @@
 <h5><span class="tsd-kind-parameter">streamRecord</span>: <span class="tsd-signature-type ">DynamicFields</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="../types/StreamInfo.html" class="tsd-signature-type tsd-kind-type-alias">StreamInfo</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L662">src/stream.ts:662</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L702">src/stream.ts:702</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="createTransaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>create<wbr/>Transaction</span><a href="#createTransaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -230,7 +255,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">TransactionBlock</span><span class="tsd-signature-symbol">&gt;</span></h4><p>the TransactionBlock which can be signed to create a new payment stream</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L165">src/stream.ts:165</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L165">src/stream.ts:165</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="ensurePositiveInteger" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>ensure<wbr/>Positive<wbr/>Integer</span><a href="#ensurePositiveInteger" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -243,7 +268,7 @@
 <h5><span class="tsd-kind-parameter">num</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L705">src/stream.ts:705</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L745">src/stream.ts:745</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="ensureValidCoinType" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>ensure<wbr/>Valid<wbr/>Coin<wbr/>Type</span><a href="#ensureValidCoinType" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -256,7 +281,7 @@
 <h5><span class="tsd-kind-parameter">coinType</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L726">src/stream.ts:726</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L766">src/stream.ts:766</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="ensureValidFeePoint" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>ensure<wbr/>Valid<wbr/>Fee<wbr/>Point</span><a href="#ensureValidFeePoint" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -269,7 +294,7 @@
 <h5><span class="tsd-kind-parameter">feePoint</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L718">src/stream.ts:718</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L758">src/stream.ts:758</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="ensureValidTime" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>ensure<wbr/>Valid<wbr/>Time</span><a href="#ensureValidTime" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -282,7 +307,7 @@
 <h5><span class="tsd-kind-parameter">time</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L711">src/stream.ts:711</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L751">src/stream.ts:751</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="extendTransaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>extend<wbr/>Transaction</span><a href="#extendTransaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -316,7 +341,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">TransactionBlock</span><span class="tsd-signature-symbol">&gt;</span></h4><p>the TransactionBlock which can be signed to extend an existing payment stream</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L231">src/stream.ts:231</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L231">src/stream.ts:231</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="extractCoinType" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>extract<wbr/>Coin<wbr/>Type</span><a href="#extractCoinType" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -329,7 +354,7 @@
 <h5><span class="tsd-kind-parameter">type</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L699">src/stream.ts:699</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L739">src/stream.ts:739</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="getCoin" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>get<wbr/>Coin</span><a href="#getCoin" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -348,7 +373,7 @@
 <h5><span class="tsd-kind-parameter">amount</span>: <span class="tsd-signature-type">bigint</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">index</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">kind</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;Input&quot;</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">type</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">&quot;object&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;pure&quot;</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">value</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">kind</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;GasCoin&quot;</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">index</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">kind</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;Result&quot;</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">index</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">kind</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;NestedResult&quot;</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">resultIndex</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L763">src/stream.ts:763</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L803">src/stream.ts:803</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="getCoins" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>get<wbr/>Coins</span><a href="#getCoins" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -365,7 +390,7 @@
 <h5><span class="tsd-kind-parameter">amount</span>: <span class="tsd-signature-type">bigint</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L743">src/stream.ts:743</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L783">src/stream.ts:783</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="getOwnedObjects" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>get<wbr/>Owned<wbr/>Objects</span><a href="#getOwnedObjects" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -380,7 +405,7 @@
 <h5><span class="tsd-kind-parameter">structType</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L618">src/stream.ts:618</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L658">src/stream.ts:658</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="getPaginatedOwnedObjects" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>get<wbr/>Paginated<wbr/>Owned<wbr/>Objects</span><a href="#getPaginatedOwnedObjects" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -397,7 +422,7 @@
 <h5><span class="tsd-kind-parameter">paginationArguments</span>: <span class="tsd-signature-type ">PaginationArguments</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">atCheckpoint</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">objectId</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">PaginatedObjectIds</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L636">src/stream.ts:636</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L676">src/stream.ts:676</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getPaginatedRecipientCaps" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Paginated<wbr/>Recipient<wbr/>Caps</span><a href="#getPaginatedRecipientCaps" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -419,7 +444,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">PaginatedObjectIds</span><span class="tsd-signature-symbol">&gt;</span></h4><p>PaginatedObjectIds object</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L550">src/stream.ts:550</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L590">src/stream.ts:590</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getPaginatedSenderCaps" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Paginated<wbr/>Sender<wbr/>Caps</span><a href="#getPaginatedSenderCaps" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -441,7 +466,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">PaginatedObjectIds</span><span class="tsd-signature-symbol">&gt;</span></h4><p>PaginatedObjectIds object</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L521">src/stream.ts:521</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L561">src/stream.ts:561</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getPaginatedSupportedCoins" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Paginated<wbr/>Supported<wbr/>Coins</span><a href="#getPaginatedSupportedCoins" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -457,7 +482,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">PaginatedCoinConfigs</span><span class="tsd-signature-symbol">&gt;</span></h4><p>paginated supported coins</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L586">src/stream.ts:586</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L626">src/stream.ts:626</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getRecipientCaps" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Recipient<wbr/>Caps</span><a href="#getRecipientCaps" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -475,7 +500,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><p>an array of RecipientCap object ids</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L538">src/stream.ts:538</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L578">src/stream.ts:578</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getSenderCaps" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Sender<wbr/>Caps</span><a href="#getSenderCaps" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -493,7 +518,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><p>an array of SenderCap object ids</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L510">src/stream.ts:510</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L550">src/stream.ts:550</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getStreamById" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Stream<wbr/>By<wbr/>Id</span><a href="#getStreamById" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -511,7 +536,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/StreamInfo.html" class="tsd-signature-type tsd-kind-type-alias">StreamInfo</a><span class="tsd-signature-symbol">&gt;</span></h4><p>the StreamInfo object</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L470">src/stream.ts:470</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L470">src/stream.ts:470</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getStreamCreationResult" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Stream<wbr/>Creation<wbr/>Result</span><a href="#getStreamCreationResult" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -632,7 +657,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">StreamCreationResult</span></h4><p>a StreamCreationResult struct</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L411">src/stream.ts:411</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L411">src/stream.ts:411</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getStreams" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Streams</span><a href="#getStreams" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -654,7 +679,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../types/StreamInfo.html" class="tsd-signature-type tsd-kind-type-alias">StreamInfo</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><p>an array of StreamInfo objects satisfying the parameters</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L439">src/stream.ts:439</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L439">src/stream.ts:439</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getSupportedCoins" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Supported<wbr/>Coins</span><a href="#getSupportedCoins" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -665,7 +690,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type ">CoinConfig</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><p>all the supported coins</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L566">src/stream.ts:566</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L606">src/stream.ts:606</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="isSUI" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>isSUI</span><a href="#isSUI" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -678,7 +703,7 @@
 <h5><span class="tsd-kind-parameter">coinType</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L739">src/stream.ts:739</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L779">src/stream.ts:779</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-private"><a id="normalizeCoinType" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>normalize<wbr/>Coin<wbr/>Type</span><a href="#normalizeCoinType" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-private">
@@ -691,7 +716,7 @@
 <h5><span class="tsd-kind-parameter">coinType</span>: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L734">src/stream.ts:734</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L774">src/stream.ts:774</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="pauseTransaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>pause<wbr/>Transaction</span><a href="#pauseTransaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -717,7 +742,51 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">TransactionBlock</span></h4><p>the TransactionBlock which can be signed to pause an existing payment stream</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L273">src/stream.ts:273</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L273">src/stream.ts:273</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="pauseable" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>pauseable</span><a href="#pauseable" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="pauseable.pauseable-1"><span class="tsd-kind-call-signature">pauseable</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">stream</span>, <span class="tsd-kind-parameter">sender</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#pauseable.pauseable-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>This function returns true if the stream can be paused by the sender, and false otherwise</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">stream</span>: <a href="../types/StreamInfo.html" class="tsd-signature-type tsd-kind-type-alias">StreamInfo</a></h5>
+<div class="tsd-comment tsd-typography"><p>the StreamInfo object</p>
+</div></li>
+<li>
+<h5><span class="tsd-kind-parameter">sender</span>: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>the sender address</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><p>true if the stream can be paused by the sender, and false otherwise</p>
+<aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L524">src/stream.ts:524</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="recipientModifiable" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>recipient<wbr/>Modifiable</span><a href="#recipientModifiable" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="recipientModifiable.recipientModifiable-1"><span class="tsd-kind-call-signature">recipient<wbr/>Modifiable</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">stream</span>, <span class="tsd-kind-parameter">recipient</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#recipientModifiable.recipientModifiable-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>This function returns true if the stream can be modified by the recipient, and false otherwise</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">stream</span>: <a href="../types/StreamInfo.html" class="tsd-signature-type tsd-kind-type-alias">StreamInfo</a></h5>
+<div class="tsd-comment tsd-typography"><p>the StreamInfo object</p>
+</div></li>
+<li>
+<h5><span class="tsd-kind-parameter">recipient</span>: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>the recipient address</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><p>true if the stream can be modified by the recipient, and false otherwise</p>
+<aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L538">src/stream.ts:538</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="registerCoinTransaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>register<wbr/>Coin<wbr/>Transaction</span><a href="#registerCoinTransaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -739,7 +808,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">TransactionBlock</span></h4><p>the TransactionBlock which can be signed by the admin to register a new coin type</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L795">src/stream.ts:795</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L835">src/stream.ts:835</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="resumeTransaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>resume<wbr/>Transaction</span><a href="#resumeTransaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -765,7 +834,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">TransactionBlock</span></h4><p>the TransactionBlock which can be signed to resume a paused payment stream</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L302">src/stream.ts:302</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L302">src/stream.ts:302</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="setFeePointTransaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Fee<wbr/>Point<wbr/>Transaction</span><a href="#setFeePointTransaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -787,7 +856,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">TransactionBlock</span></h4><p>the TransactionBlock which can be signed by the admin to set the new fee point</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L821">src/stream.ts:821</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L861">src/stream.ts:861</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="setFeeRecipientTransaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Fee<wbr/>Recipient<wbr/>Transaction</span><a href="#setFeeRecipientTransaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -805,7 +874,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">TransactionBlock</span></h4><p>the TransactionBlock which can be signed by the admin to set the new fee recipient</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L846">src/stream.ts:846</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L886">src/stream.ts:886</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="setNewRecipientTransaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>New<wbr/>Recipient<wbr/>Transaction</span><a href="#setNewRecipientTransaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -829,7 +898,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">TransactionBlock</span></h4><p>the TransactionBlock which can be signed to set a new recipient of the payment stream.</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L355">src/stream.ts:355</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L355">src/stream.ts:355</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="withdrawTransaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>withdraw<wbr/>Transaction</span><a href="#withdrawTransaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -851,7 +920,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">TransactionBlock</span></h4><p>the TransactionBlock which can be signed to withdraw from a payment stream.</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L330">src/stream.ts:330</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L330">src/stream.ts:330</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="withdrawable" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>withdrawable</span><a href="#withdrawable" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -869,7 +938,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">bigint</span></h4><p>the amount of the withdrawable fund</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/756f11c/src/stream.ts#L487">src/stream.ts:487</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/Move-Flow/moveflow-sui-sdk/blob/ab5e563/src/stream.ts#L487">src/stream.ts:487</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -897,6 +966,7 @@
 <li><a href="#network" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-262144-path"></use><use href="#icon-262144-text"></use></svg><span>network</span></a></li>
 <li><a href="#networkName" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-262144-path"></use><use href="#icon-262144-text"></use></svg><span>network<wbr/>Name</span></a></li>
 <li><a href="#closeTransaction" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>close<wbr/>Transaction</span></a></li>
+<li><a href="#closeable" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>closeable</span></a></li>
 <li><a href="#convert" class="tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>convert</span></a></li>
 <li><a href="#createTransaction" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>create<wbr/>Transaction</span></a></li>
 <li><a href="#ensurePositiveInteger" class="tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>ensure<wbr/>Positive<wbr/>Integer</span></a></li>
@@ -921,6 +991,8 @@
 <li><a href="#isSUI" class="tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>isSUI</span></a></li>
 <li><a href="#normalizeCoinType" class="tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>normalize<wbr/>Coin<wbr/>Type</span></a></li>
 <li><a href="#pauseTransaction" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>pause<wbr/>Transaction</span></a></li>
+<li><a href="#pauseable" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>pauseable</span></a></li>
+<li><a href="#recipientModifiable" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>recipient<wbr/>Modifiable</span></a></li>
 <li><a href="#registerCoinTransaction" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>register<wbr/>Coin<wbr/>Transaction</span></a></li>
 <li><a href="#resumeTransaction" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>resume<wbr/>Transaction</span></a></li>
 <li><a href="#setFeePointTransaction" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Fee<wbr/>Point<wbr/>Transaction</span></a></li>
