@@ -103,6 +103,30 @@ describe('Stream', () => {
     console.log(response)
   })
 
+  test('the stream is pauseable for the sender', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const senderAddress = await sender.getAddress()
+    expect(stream.pauseable(streamInfo, senderAddress)).toBe(true)
+  })
+
+  test('the stream is not pauseable for the admin', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const adminAddress = await admin.getAddress()
+    expect(stream.pauseable(streamInfo, adminAddress)).toBe(false)
+  })
+
+  test('the stream is not pauseable for the recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const recipientAddress = await recipient.getAddress()
+    expect(stream.pauseable(streamInfo, recipientAddress)).toBe(false)
+  })
+
+  test('the stream is not pauseable for another recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const anotherRecipientAddress = await anotherRecipient.getAddress()
+    expect(stream.pauseable(streamInfo, anotherRecipientAddress)).toBe(false)
+  })
+
   test('pauseTransaction works', async () => {
     const txb = stream.pauseTransaction(
       coinType,
@@ -120,6 +144,30 @@ describe('Stream', () => {
     })
     console.log('--- pauseTransaction Response ---')
     console.log(response)
+  })
+
+  test('the stream is not pauseable for the sender', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const senderAddress = await sender.getAddress()
+    expect(stream.pauseable(streamInfo, senderAddress)).toBe(false)
+  })
+
+  test('the stream is not pauseable for the admin', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const adminAddress = await admin.getAddress()
+    expect(stream.pauseable(streamInfo, adminAddress)).toBe(false)
+  })
+
+  test('the stream is not pauseable for the recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const recipientAddress = await recipient.getAddress()
+    expect(stream.pauseable(streamInfo, recipientAddress)).toBe(false)
+  })
+
+  test('the stream is not pauseable for another recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const anotherRecipientAddress = await anotherRecipient.getAddress()
+    expect(stream.pauseable(streamInfo, anotherRecipientAddress)).toBe(false)
   })
 
   test('withdrawable should be 0 when stream is paused', async () => {
@@ -145,6 +193,78 @@ describe('Stream', () => {
     })
     console.log('--- resumeTransaction Response ---')
     console.log(response)
+  })
+
+  test('the stream is pauseable for the sender', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const senderAddress = await sender.getAddress()
+    expect(stream.pauseable(streamInfo, senderAddress)).toBe(true)
+  })
+
+  test('the stream is not pauseable for the admin', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const adminAddress = await admin.getAddress()
+    expect(stream.pauseable(streamInfo, adminAddress)).toBe(false)
+  })
+
+  test('the stream is not pauseable for the recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const recipientAddress = await recipient.getAddress()
+    expect(stream.pauseable(streamInfo, recipientAddress)).toBe(false)
+  })
+
+  test('the stream is not pauseable for another recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const anotherRecipientAddress = await anotherRecipient.getAddress()
+    expect(stream.pauseable(streamInfo, anotherRecipientAddress)).toBe(false)
+  })
+
+  test('the stream is closeable for the sender', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const senderAddress = await sender.getAddress()
+    expect(stream.closeable(streamInfo, senderAddress)).toBe(true)
+  })
+
+  test('the stream is not closeable for the admin', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const adminAddress = await admin.getAddress()
+    expect(stream.closeable(streamInfo, adminAddress)).toBe(false)
+  })
+
+  test('the stream is not closeable for the recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const recipientAddress = await recipient.getAddress()
+    expect(stream.closeable(streamInfo, recipientAddress)).toBe(false)
+  })
+
+  test('the stream is not closeable for another recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const anotherRecipientAddress = await anotherRecipient.getAddress()
+    expect(stream.closeable(streamInfo, anotherRecipientAddress)).toBe(false)
+  })
+
+  test('the stream is not recipientModifiable for the sender', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const senderAddress = await sender.getAddress()
+    expect(stream.recipientModifiable(streamInfo, senderAddress)).toBe(false)
+  })
+
+  test('the stream is not recipientModifiable for the admin', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const adminAddress = await admin.getAddress()
+    expect(stream.recipientModifiable(streamInfo, adminAddress)).toBe(false)
+  })
+
+  test('the stream is recipientModifiable for the recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const recipientAddress = await recipient.getAddress()
+    expect(stream.recipientModifiable(streamInfo, recipientAddress)).toBe(true)
+  })
+
+  test('the stream is not recipientModifiable for another recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const anotherRecipientAddress = await anotherRecipient.getAddress()
+    expect(stream.recipientModifiable(streamInfo, anotherRecipientAddress)).toBe(false)
   })
 
   test('withdrawable should be greater than 0 when stream is resumed', async () => {
@@ -193,6 +313,30 @@ describe('Stream', () => {
     console.log(response)
   })
 
+  test('the stream is not recipientModifiable for the sender', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const senderAddress = await sender.getAddress()
+    expect(stream.recipientModifiable(streamInfo, senderAddress)).toBe(false)
+  })
+
+  test('the stream is not recipientModifiable for the admin', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const adminAddress = await admin.getAddress()
+    expect(stream.recipientModifiable(streamInfo, adminAddress)).toBe(false)
+  })
+
+  test('the stream is not recipientModifiable for the recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const recipientAddress = await recipient.getAddress()
+    expect(stream.recipientModifiable(streamInfo, recipientAddress)).toBe(false)
+  })
+
+  test('the stream is recipientModifiable for another recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const anotherRecipientAddress = await anotherRecipient.getAddress()
+    expect(stream.recipientModifiable(streamInfo, anotherRecipientAddress)).toBe(true)
+  })
+
   test('closeTransaction works', async () => {
     const txb = stream.closeTransaction(
       coinType,
@@ -210,6 +354,78 @@ describe('Stream', () => {
     })
     console.log('--- closeTransaction Response ---')
     console.log(response)
+  })
+
+  test('the stream is not pauseable for the sender', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const senderAddress = await sender.getAddress()
+    expect(stream.pauseable(streamInfo, senderAddress)).toBe(false)
+  })
+
+  test('the stream is not pauseable for the admin', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const adminAddress = await admin.getAddress()
+    expect(stream.pauseable(streamInfo, adminAddress)).toBe(false)
+  })
+
+  test('the stream is not pauseable for the recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const recipientAddress = await recipient.getAddress()
+    expect(stream.pauseable(streamInfo, recipientAddress)).toBe(false)
+  })
+
+  test('the stream is not pauseable for another recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const anotherRecipientAddress = await anotherRecipient.getAddress()
+    expect(stream.pauseable(streamInfo, anotherRecipientAddress)).toBe(false)
+  })
+
+  test('the stream is not closeable for the sender', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const senderAddress = await sender.getAddress()
+    expect(stream.closeable(streamInfo, senderAddress)).toBe(false)
+  })
+
+  test('the stream is not closeable for the admin', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const adminAddress = await admin.getAddress()
+    expect(stream.closeable(streamInfo, adminAddress)).toBe(false)
+  })
+
+  test('the stream is not closeable for the recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const recipientAddress = await recipient.getAddress()
+    expect(stream.closeable(streamInfo, recipientAddress)).toBe(false)
+  })
+
+  test('the stream is not closeable for another recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const anotherRecipientAddress = await anotherRecipient.getAddress()
+    expect(stream.closeable(streamInfo, anotherRecipientAddress)).toBe(false)
+  })
+
+  test('the stream is not recipientModifiable for the sender', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const senderAddress = await sender.getAddress()
+    expect(stream.recipientModifiable(streamInfo, senderAddress)).toBe(false)
+  })
+
+  test('the stream is not recipientModifiable for the admin', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const adminAddress = await admin.getAddress()
+    expect(stream.recipientModifiable(streamInfo, adminAddress)).toBe(false)
+  })
+
+  test('the stream is not recipientModifiable for the recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const recipientAddress = await recipient.getAddress()
+    expect(stream.recipientModifiable(streamInfo, recipientAddress)).toBe(false)
+  })
+
+  test('the stream is not recipientModifiable for another recipient', async () => {
+    const streamInfo = await stream.getStreamById(streamCreationResult.streamId)
+    const anotherRecipientAddress = await anotherRecipient.getAddress()
+    expect(stream.recipientModifiable(streamInfo, anotherRecipientAddress)).toBe(false)
   })
 
   test('withdrawable should be 0 when stream is closed', async () => {

@@ -502,6 +502,46 @@ export class Stream {
   }
 
   /**
+   * This function returns true if the stream can be closed by the sender, and false otherwise
+   *
+   * @param stream the StreamInfo object
+   * @param sender the sender address
+   * @returns true if the stream can be closed by the sender, and false otherwise
+   */
+  closeable(stream: StreamInfo, sender: SuiAddress): boolean {
+    return stream.sender == sender
+      && stream.featureInfo.senderCloseable
+      && !stream.closed
+  }
+
+  /**
+   * This function returns true if the stream can be paused by the sender, and false otherwise
+   *
+   * @param stream the StreamInfo object
+   * @param sender the sender address
+   * @returns true if the stream can be paused by the sender, and false otherwise
+   */
+  pauseable(stream: StreamInfo, sender: SuiAddress): boolean {
+    return stream.sender == sender
+      && stream.featureInfo.pauseable
+      && !stream.closed
+      && !stream.pauseInfo.paused
+  }
+
+  /**
+   * This function returns true if the stream can be modified by the recipient, and false otherwise
+   *
+   * @param stream the StreamInfo object
+   * @param recipient the recipient address
+   * @returns true if the stream can be modified by the recipient, and false otherwise
+   */
+  recipientModifiable(stream: StreamInfo, recipient: SuiAddress): boolean {
+    return stream.recipient == recipient
+      && stream.featureInfo.recipientModifiable
+      && !stream.closed
+  }
+
+  /**
    * This function returns all the SenderCap object ids of the owner. Use this function if there aren't many (over 100) SenderCaps
    *
    * @param owner the owner of the SenderCaps
