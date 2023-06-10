@@ -12,7 +12,7 @@ You can find [docs here](https://move-flow.github.io/moveflow-sui-sdk/)
 
 # Installation
 
-    yarn add "moveflow-sui-sdk"
+    yarn add "@moveflow/sui-sdk.js"
 
 # Usage Example
 
