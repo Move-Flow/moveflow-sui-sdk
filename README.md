@@ -19,7 +19,7 @@ You can find [docs here](https://move-flow.github.io/moveflow-sui-sdk/)
 ### Init SDK
 
 ```typescript
-import { Stream, Network } from "moveflow-sui-sdk";
+import { Stream, Network } from "@moveflow/sui-sdk.js";
 
 const stream = new Stream(Network.mainnet);
 ```
