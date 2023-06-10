@@ -11,7 +11,7 @@ import {
   normalizeSuiObjectId,
   TransactionArgument,
   PaginationArguments,
-  PaginatedObjectsResponse
+  PaginatedObjectsResponse,
 } from '@mysten/sui.js'
 import { Network, Config, getConfig } from './config'
 
@@ -104,14 +104,14 @@ export type CoinConfig = {
 }
 
 export type PaginatedCoinConfigs = {
-  coinConfigs: CoinConfig[],
-  nextCursor: string | null,
+  coinConfigs: CoinConfig[]
+  nextCursor: string | null
   hasNextPage: boolean
 }
 
 export type PaginatedObjectIds = {
-  objectIds: ObjectId[],
-  nextCursor: PaginatedObjectsResponse['nextCursor'],
+  objectIds: ObjectId[]
+  nextCursor: PaginatedObjectsResponse['nextCursor']
   hasNextPage: boolean
 }
 
@@ -246,7 +246,7 @@ export class Stream {
 
     const txb = new TransactionBlock()
     const numOfIntervals = (newStopTime - streamInfo.stopTime) / streamInfo.interval
-    const depositAmount: bigint = BigInt(Math.ceil(streamInfo.ratePerInterval * numOfIntervals / 1000))
+    const depositAmount = BigInt(Math.ceil(streamInfo.ratePerInterval * numOfIntervals / 1000))
     const coin = await this.getCoin(txb, sender, coinType, depositAmount)
     txb.moveCall({
       target: `${this._config.packageObjectId}::stream::extend`,
@@ -608,7 +608,7 @@ export class Stream {
     let nextCursor = null
     while (hasNextPage) {
       const paginatedCoinConfigs = await this.getPaginatedSupportedCoins({
-        cursor: nextCursor
+        cursor: nextCursor,
       })
       coinConfigs.push(...paginatedCoinConfigs.coinConfigs)
       hasNextPage = paginatedCoinConfigs.hasNextPage
@@ -628,17 +628,17 @@ export class Stream {
     const coinConfigs: CoinConfig[] = []
     const coinConfigsObject = await this._rpcProvider.getDynamicFields({
       parentId: this._config.coinConfigsObjectId,
-      ...paginationArguments
+      ...paginationArguments,
     })
     const objectIds: ObjectId[] = []
-    for (let data of coinConfigsObject.data) {
+    for (const data of coinConfigsObject.data) {
       objectIds.push(data.objectId)
     }
     const coinConfigObjects = await this._rpcProvider.multiGetObjects({
       ids: objectIds,
-      options: { showContent: true }
+      options: { showContent: true },
     })
-    for (let coinConfigObject of coinConfigObjects) {
+    for (const coinConfigObject of coinConfigObjects) {
       const content = coinConfigObject.data?.content as DynamicFields
       coinConfigs.push({
         coinType: content.fields.value.fields.coin_type,
@@ -648,7 +648,7 @@ export class Stream {
     return {
       coinConfigs,
       nextCursor: coinConfigsObject.nextCursor,
-      hasNextPage: coinConfigsObject.hasNextPage
+      hasNextPage: coinConfigsObject.hasNextPage,
     }
   }
 
@@ -694,7 +694,7 @@ export class Stream {
     return {
       objectIds,
       nextCursor: ownedObjects.nextCursor,
-      hasNextPage: ownedObjects.hasNextPage
+      hasNextPage: ownedObjects.hasNextPage,
     }
   }
 
@@ -815,7 +815,7 @@ export class Stream {
       } else { // number of coins cannot be 0, as we have checked the balance before
         const primaryCoinInput = txb.object(coinObjectIds[0])
         txb.mergeCoins(primaryCoinInput, coinObjectIds.slice(1).map(id => txb.object(id)))
-        coin = txb.splitCoins(primaryCoinInput, [txb.pure(amount)])[0];
+        coin = txb.splitCoins(primaryCoinInput, [txb.pure(amount)])[0]
       }
     }
     return coin

@@ -10,7 +10,7 @@ import {
   Network,
   Config,
   getConfig,
-  TESTNET_CONFIG
+  TESTNET_CONFIG,
 } from './config'
 
 export {
@@ -22,5 +22,5 @@ export {
   Network,
   Config,
   getConfig,
-  TESTNET_CONFIG
+  TESTNET_CONFIG,
 }

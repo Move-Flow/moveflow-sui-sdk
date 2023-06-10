@@ -42,7 +42,7 @@ describe('Stream', () => {
     '0x2::sui::SUI',
     '0x467c38a912a5927b73d1d8f821d30f9c8ad8d87e5228869a79866668938a8b9c::paper_coin::PAPER_COIN',
     'xyz::paper_coin::PAPER_COIN',
-    '0x467c38a912a5927b73d1d8f821d30f9c8ad8d87e5228869a79866668938a8b9c::paper_coin'
+    '0x467c38a912a5927b73d1d8f821d30f9c8ad8d87e5228869a79866668938a8b9c::paper_coin',
   ]
 
   test('constructor works', () => {
@@ -107,7 +107,7 @@ describe('Stream', () => {
       stopTime,
       interval
     )).rejects.toThrowError(
-      `name exceeds the maximum length 1024 characters`
+      'name exceeds the maximum length 1024 characters'
     )
   })
 
@@ -132,7 +132,7 @@ describe('Stream', () => {
       stopTime,
       interval
     )).rejects.toThrowError(
-      `remark exceeds the maximum length 1024 characters`
+      'remark exceeds the maximum length 1024 characters'
     )
   })
 
@@ -343,7 +343,7 @@ describe('Stream', () => {
   })
 
   test('getStreamById throws error if streamId is invalid', async () => {
-    const streamId = streamCreationResult.streamId + 'b';
+    const streamId = streamCreationResult.streamId + 'b'
     await expect(stream.getStreamById(streamId)).rejects.toThrowError(
       `${streamId} is not a valid ObjectId`
     )
