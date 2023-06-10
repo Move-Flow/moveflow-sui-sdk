@@ -180,19 +180,18 @@ export class Stream {
     if (remark.length > 1024) throw new Error('remark exceeds the maximum length 1024 characters')
     if (!isValidSuiAddress(sender)) throw new Error(`${sender} is not a valid address`)
     if (!isValidSuiAddress(recipient)) throw new Error(`${recipient} is not a valid address`)
-    if (depositAmount < 0) throw new Error(`${depositAmount} is negative`)
+    if (depositAmount < 0) throw new Error(`depositAmount ${depositAmount} is negative`)
     this.ensureValidTime(startTime)
     this.ensureValidTime(stopTime)
     if (stopTime <= startTime) throw new Error(`stopTime ${stopTime} is before startTime ${startTime}`)
     if (stopTime <= Date.now() / 1000) throw new Error(`stopTime ${stopTime} is in the past`)
     this.ensureValidTime(interval)
 
-    const isSUI = this.isSUI(coinType)
     const balance = await this._rpcProvider.getBalance({ owner: sender, coinType })
     const totalBalance = BigInt(balance.totalBalance)
     const lockedBalance = balance.lockedBalance.number ? BigInt(balance.lockedBalance.number) : BigInt(0)
     const availableBalance = totalBalance - lockedBalance
-    if (isSUI && availableBalance <= depositAmount || !isSUI && totalBalance < depositAmount) {
+    if (availableBalance <= depositAmount) {
       throw new Error(`the sender ${sender} has not enough balance of ${coinType} to pay the deposit ${depositAmount}`)
     }
     const txb = new TransactionBlock()
@@ -744,7 +743,7 @@ export class Stream {
 
   private ensurePositiveInteger(num: number) {
     if (num < 0 || !Number.isInteger(num)) {
-      throw new Error(`The number ${num} is negative`)
+      throw new Error(`The number ${num} is negative or not an integer`)
     }
   }
 
@@ -811,12 +810,12 @@ export class Stream {
       coin = txb.splitCoins(txb.gas, [txb.pure(amount)])[0]
     } else {
       const coinObjectIds = await this.getCoins(owner, coinType, amount)
-      if (coinObjectIds.length == 0)
-        throw new Error(`no coin is available in the account ${owner}`)
       if (coinObjectIds.length == 1) {
         coin = txb.object(coinObjectIds[0])
-      } else {
-        coin = txb.mergeCoins(txb.object(coinObjectIds[0]), coinObjectIds.slice(1).map(id => txb.object(id)))
+      } else { // number of coins cannot be 0, as we have checked the balance before
+        const primaryCoinInput = txb.object(coinObjectIds[0])
+        txb.mergeCoins(primaryCoinInput, coinObjectIds.slice(1).map(id => txb.object(id)))
+        coin = txb.splitCoins(primaryCoinInput, [txb.pure(amount)])[0];
       }
     }
     return coin
