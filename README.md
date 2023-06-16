@@ -35,10 +35,8 @@ const startTime = Math.floor(Date.now() / 1000);
 const duration = 24 * 60 * 60; // 1 day
 const stopTime = startTime + duration;
 const interval = 1; // 1 second
-const senderAddress =
-  "0x7905ae3ed4a5a77284684fa86fd83c38a9f138b0cc390721c46bca3aaafaf26c";
-const recipientAddress =
-  "0x45f5a96940e84dd876b1adc2c434961178fc94cb79c23a9f8ddc57c996255869";
+const senderAddress = "0x7905ae3ed4a5a77284684fa86fd83c38a9f138b0cc390721c46bca3aaafaf26c";
+const recipientAddress = "0x45f5a96940e84dd876b1adc2c434961178fc94cb79c23a9f8ddc57c996255869";
 const tx = await stream.createTransaction(
   coinType,
   name,
@@ -137,8 +135,7 @@ console.log("streams:", streams);
 ### Query outgoing streams
 
 ```typescript
-const address =
-  "0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2";
+const address = "0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2";
 const streams = await stream.getStreams(address, StreamDirection.OUT);
 console.log("streams:", streams);
 ```
@@ -146,8 +143,7 @@ console.log("streams:", streams);
 ### Query sender caps
 
 ```typescript
-const owner =
-  "0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2";
+const owner = "0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2";
 const caps = await stream.getSenderCap(owner);
 const list = caps.data.map((m) => {
   return {

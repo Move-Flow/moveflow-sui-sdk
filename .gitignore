@@ -6,6 +6,7 @@
 /lib
 /out
 /build
+/docs
 
 # Debug logs
 npm-debug.log*
