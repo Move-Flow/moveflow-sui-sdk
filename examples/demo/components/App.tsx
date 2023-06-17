@@ -18,6 +18,7 @@ import {Stream, StreamDirection, StreamCreationResult } from "@moveflow/sui-sdk.
 import { Network } from "@moveflow/sui-sdk.js/dist/tsc/config";
 
 import {useMemo, useEffect } from "react";
+import { sendRenderResult } from 'next/dist/server/send-payload';
 
 
 function App() {
@@ -28,9 +29,9 @@ function App() {
   const coinType = '0x2::sui::SUI'
 
   let streamCreationResult: StreamCreationResult = {
-    streamId: '0xb82f7e5d3cab6f756514bec94eb50605b9a7a99400e0f0053c470e03f1eb1499',
-    senderCap: '',
-    recipientCap: '',
+    streamId: '0x226c8f4a2ed2925111d55691cedf99656273ea9f69b08ab00ca76f9bbcb771dd',
+    senderCap: '0x61b81b8c916d9f652d9c19a9984e780827816c8366e5f41633077a7f1306560c',
+    recipientCap: '0x4b3498023f021161fd9c961660876cf01127e11b598bc2185b9cde4a99624f33',
   }
 
   function uint8arrayToHex(value: Uint8Array | undefined) {
@@ -45,7 +46,7 @@ function App() {
     const remark = 'first sui stream'
     const recipient = '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
     const depositAmount = 10000000
-    const startTime = Date.parse(new Date() as any)/1000  - 60
+    const startTime = Math.floor(Date.now() / 1000);
     const duration = 24 * 60 * 60 // 1 day
     const stopTime = startTime + duration
 
@@ -57,6 +58,7 @@ function App() {
       depositAmount,
       startTime,
       stopTime,
+      1,
     )
     const response = await wallet.signAndExecuteTransactionBlock({
       transactionBlock: tx as any,
@@ -119,7 +121,7 @@ function App() {
 
     const tx = stream.withdrawTransaction(
       coinType, 
-      '0xb82f7e5d3cab6f756514bec94eb50605b9a7a99400e0f0053c470e03f1eb1499' 
+      streamCreationResult.streamId
     )
     const response = await wallet.signAndExecuteTransactionBlock({
       transactionBlock: tx as any,
