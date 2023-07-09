@@ -549,6 +549,17 @@ export class Stream {
   async getSenderCaps(owner: SuiAddress): Promise<ObjectId[]> {
     return this.getOwnedObjects(owner, `${this._config.packageObjectId}::stream::SenderCap`)
   }
+  
+  // async getSenderCap(owner: string) {
+  //   const senderObjects = await this._rpcProvider.getOwnedObjects({
+  //     owner: owner,
+  //     options: {showContent: true},
+  //     filter: {
+  //       StructType: `${this._config.packageObjectId}::stream::SenderCap`
+  //     }
+  //   })
+  //   return senderObjects
+  // }
 
   /**
    * This function returns PaginatedObjectIds. Use this function if there are many (over 100) senderCaps

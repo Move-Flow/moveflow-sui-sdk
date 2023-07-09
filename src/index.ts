@@ -4,6 +4,9 @@ import {
   FeatureInfo,
   FeeInfo,
   PauseInfo,
+  StreamCreationResult,
+  StreamDirection,
+  PaginatedCoinConfigs
 } from './stream'
 
 import {
@@ -23,4 +26,7 @@ export {
   Config,
   getConfig,
   TESTNET_CONFIG,
+  StreamCreationResult,
+  StreamDirection,
+  PaginatedCoinConfigs
 }

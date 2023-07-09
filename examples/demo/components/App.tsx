@@ -5,18 +5,20 @@ import {
   ErrorCode
 } from '@suiet/wallet-kit';
 
-import { Stream, StreamDirection, StreamCreationResult } from "@moveflow/sui-sdk.js"
-import { Network } from "@moveflow/sui-sdk.js/dist/tsc/config";
+
+import { Stream, Network,  } from "@moveflow/sui-sdk.js"
+import { StreamDirection, StreamCreationResult } from '@moveflow/sui-sdk.js';
 import React, { useState } from 'react';
 
-
+const senderAddress = '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
+const recipient = '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
 function App() {
   const wallet = useWallet();
   const {balance} = useAccountBalance();
 
   const [streamCreationResult, setStreamCreationResult] = useState({} as StreamCreationResult)
 
-  const stream = new Stream(Network.testnet)
+  const stream = new Stream(Network.testnet);
   const coinType = '0x2::sui::SUI'
 
   // let streamCreationResult: StreamCreationResult = {
@@ -35,22 +37,25 @@ function App() {
    
     const name = 'first'
     const remark = 'first sui stream'
-    const recipient = uint8arrayToHex(wallet.account?.publicKey) // '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
-    const depositAmount = 10000000
+    // const recipient = uint8arrayToHex(wallet.account?.publicKey) // '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
+    const depositAmount = BigInt(10000000);
     const startTime = Math.floor(Date.now() / 1000);
     const duration = 24 * 60 * 60 // 1 day
     const stopTime = startTime + duration
+    // const senderAddress = uint8arrayToHex(wallet.account?.publicKey) // "0x7905ae3ed4a5a77284684fa86fd83c38a9f138b0cc390721c46bca3aaafaf26c";
 
-    const tx = stream.createTransaction(
+    const tx = await stream.createTransaction(
       coinType,
       name,
       remark,
+      senderAddress,
       recipient,
       depositAmount,
       startTime,
       stopTime,
       1,
     )
+    console.log('tx:', tx)
     const response = await wallet.signAndExecuteTransactionBlock({
       transactionBlock: tx as any,
     });
@@ -125,14 +130,14 @@ function App() {
   }
 
   async function handleGetOutgoingStreams() {
-    const address = uint8arrayToHex(wallet.account?.publicKey) //'0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
-    const streams = await stream.getStreams(address, StreamDirection.OUT)
+    // const address = '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2' //'0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
+    const streams = await stream.getStreams(senderAddress, StreamDirection.OUT)
     console.log("streams:", streams)
   }
 
   async function handleGetIncomingStreams() {    
-    const address = uint8arrayToHex(wallet.account?.publicKey) // '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
-    const streams = await stream.getStreams(address, StreamDirection.IN)
+    // const address = '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2' // '0xa84b01c05ad237727daacb265fbf8d366d41567f10bb84b0c39056862250dca2'
+    const streams = await stream.getStreams(recipient, StreamDirection.IN)
 
     let list = streams.map(m=> {
       return {
@@ -163,15 +168,9 @@ function App() {
   async function getSenderCap() {    
     const owner =  uint8arrayToHex(wallet.account?.publicKey) 
 
-    const caps = await stream.getSenderCap(owner)
-    const list = caps.data.map(m=> { 
-      return {
-        cap: (m.data?.content as any).fields.id.id, 
-        stream: (m.data?.content as any).fields.stream
-      }
-    })
+    const caps = await stream.getSenderCaps(owner)
 
-    console.log("list:", list)
+    console.log("list:", caps)
   }
   
   return (
@@ -239,7 +238,7 @@ function App() {
               </button>
               
                <button onClick={() => getSenderCap()}> 
-               getSenderCap 
+               getSenderCap
               </button>
               
             </div>

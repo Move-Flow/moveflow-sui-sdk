@@ -21,7 +21,7 @@ You can find [docs here](https://move-flow.github.io/moveflow-sui-sdk/)
 ```typescript
 import { Stream, Network } from "@moveflow/sui-sdk.js";
 
-const stream = new Stream(Network.mainnet);
+const stream = new Stream(Network.testnet);
 ```
 
 ### Create a new payment stream
